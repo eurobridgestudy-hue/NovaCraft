@@ -1,10 +1,79 @@
 import { describe, expect, it } from "vitest";
-import { inquirySchema } from "@/lib/quote-schema";
+import {
+  inquirySchema,
+  isValidEmailFormat,
+  isValidInquiryMessage,
+  isValidNameFormat,
+  isValidOnlinePresence,
+} from "@/lib/quote-schema";
 
-describe("Form Delivery & Payload Constraints Verification", () => {
-  it("safely normalizes legitimate user inputs for storage", () => {
+/* =========================================================================
+   PART 1: VALIDATION TESTS (Client-side & Schema Validation)
+========================================================================= */
+describe("Part 1: Validation Tests (Client-Side & Schema Rules)", () => {
+  it("rejects empty or whitespace-only required fields", () => {
+    expect(isValidNameFormat("   ")).toBe(false);
+    expect(isValidEmailFormat("   ")).toBe(false);
+    expect(isValidInquiryMessage("   ")).toBe(false);
+
+    // Schema parse rejects missing required fields
+    expect(() =>
+      inquirySchema.parse({
+        name: "",
+        email: "",
+        helpNeeded: "",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects invalid contact names lacking letters (e.g. pure numbers)", () => {
+    expect(isValidNameFormat("123456")).toBe(false);
+    expect(isValidNameFormat("---")).toBe(false);
+    expect(isValidNameFormat("Alex Morgan")).toBe(true);
+    expect(isValidNameFormat("Li")).toBe(true);
+  });
+
+  it("rejects improperly formatted email addresses", () => {
+    expect(isValidEmailFormat("plainaddress")).toBe(false);
+    expect(isValidEmailFormat("@missinguser.com")).toBe(false);
+    expect(isValidEmailFormat("user@com")).toBe(false);
+    expect(isValidEmailFormat("alex@company.com")).toBe(true);
+  });
+
+  it("validates optional website / profile formats correctly", () => {
+    expect(isValidOnlinePresence("invalid profile format with spaces !@#")).toBe(false);
+    expect(isValidOnlinePresence("company.com")).toBe(true);
+    expect(isValidOnlinePresence("https://company.com")).toBe(true);
+    expect(isValidOnlinePresence("@company_handle")).toBe(true);
+  });
+
+  it("rejects repetitive gibberish messages", () => {
+    expect(isValidInquiryMessage("aaaa aaaa aaaa aaaa")).toBe(false);
+    expect(isValidInquiryMessage("11111111111111111111")).toBe(false);
+    expect(
+      isValidInquiryMessage("We are looking for a commercial website revamp for our consultancy."),
+    ).toBe(true);
+  });
+
+  it("silently traps spam bots via honeypot field", () => {
+    const botInput = {
+      name: "SpamBot",
+      email: "bot@spam.com",
+      helpNeeded: "Buy crypto tokens now with instant return!",
+      website: "http://spamlink.com",
+    };
+
+    expect(() => inquirySchema.parse(botInput)).toThrow();
+  });
+});
+
+/* =========================================================================
+   PART 2: BACKEND TESTS (Data Normalization & Database Constraint Safety)
+========================================================================= */
+describe("Part 2: Backend Tests (Normalization & Constraint Safety)", () => {
+  it("normalizes legitimate inquiry payload for storage", () => {
     const rawInput = {
-      name: "Li", // 2 characters
+      name: "Li",
       email: "li@studio.design",
       businessName: "Li Designs",
       currentWebsiteOrProfile: "lidesigns.com",
@@ -20,7 +89,6 @@ describe("Form Delivery & Payload Constraints Verification", () => {
   });
 
   it("handles 1-letter short names without database check failure", () => {
-    // When name is 1 char, backend pads with '.' to satisfy DB CHECK (char_length >= 2)
     const rawInput = {
       name: "T",
       email: "t@company.co",
@@ -33,8 +101,7 @@ describe("Form Delivery & Payload Constraints Verification", () => {
     expect(storedName).toBe("T.");
   });
 
-  it("handles empty optional business name without database check failure", () => {
-    // DB CHECK requires char_length(business_name) BETWEEN 2 AND 120
+  it("handles empty optional business name with default fallback", () => {
     const rawInput = {
       name: "Marcus",
       email: "marcus@company.co",
@@ -43,12 +110,10 @@ describe("Form Delivery & Payload Constraints Verification", () => {
 
     const parsed = inquirySchema.parse(rawInput);
     const storedBusinessName = parsed.businessName?.trim() || "Not specified";
-    expect(storedBusinessName.length).toBeGreaterThanOrEqual(2);
     expect(storedBusinessName).toBe("Not specified");
   });
 
-  it("handles short inquiry messages without violating DB minimum 20 chars", () => {
-    // DB CHECK requires char_length(project_details) BETWEEN 20 AND 3000
+  it("ensures inquiry messages satisfy minimum length constraint", () => {
     const rawInput = {
       name: "Marcus",
       email: "marcus@company.co",
@@ -65,22 +130,7 @@ describe("Form Delivery & Payload Constraints Verification", () => {
     expect(storedDetails).toContain("[NovaCraft Website Inquiry]");
   });
 
-  it("silently traps spam bots via honeypot field without DB insertion", () => {
-    const botInput = {
-      name: "SpamBot",
-      email: "bot@spam.com",
-      helpNeeded: "Buy crypto now!",
-      website: "http://spamlink.com",
-    };
-
-    // Honeypot schema check: website must be empty or max 0
-    expect(() => inquirySchema.parse(botInput)).toThrow();
-  });
-});
-
-describe("Error Recovery & Data Preservation Behavior", () => {
-  it("preserves user form state on failure", () => {
-    // Simulated form state before submission
+  it("preserves user form state on unexpected backend failure", () => {
     const initialFormState = {
       name: "Alex Vance",
       email: "alex@vance-industrial.com",
@@ -89,53 +139,68 @@ describe("Error Recovery & Data Preservation Behavior", () => {
       helpNeeded: "Need 5-page commercial website with contact form and services overview.",
     };
 
-    // Simulate backend throw
     let serverError: string | null = null;
     const submitted = false;
     const preservedState = { ...initialFormState };
 
     try {
-      throw new Error("Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY.");
+      throw new Error("Network timeout while contacting persistence layer.");
     } catch (err) {
       serverError = (err as Error).message;
-      // Note: submitted remains false, preservedState is intact
     }
 
     expect(submitted).toBe(false);
-    expect(serverError).toBe(
-      "Missing Supabase environment variable(s): SUPABASE_SERVICE_ROLE_KEY.",
-    );
+    expect(serverError).toBe("Network timeout while contacting persistence layer.");
     expect(preservedState.name).toBe("Alex Vance");
     expect(preservedState.helpNeeded).toBe(
       "Need 5-page commercial website with contact form and services overview.",
     );
   });
+});
 
-  it("safely stores inquiries in resilient store when Supabase environment variables are missing", async () => {
-    const { saveInquiryToStore, getAllInquiriesFromStore } =
+/* =========================================================================
+   PART 3: REAL DELIVERY VERIFICATION (Physical Persistence & Retrieval)
+========================================================================= */
+describe("Part 3: Real Delivery Verification (Physical Storage & Retrieval)", () => {
+  it("physically persists an inquiry, verifies its retrieval, and cleanly removes it", async () => {
+    const { saveInquiryToStore, getAllInquiriesFromStore, deleteInquiryFromStore } =
       await import("@/lib/inquiry-store.server");
 
+    const uniqueTag = `test-${Date.now()}`;
     const testPayload = {
-      contact_name: "Harmanpreet Singh",
-      business_name: "Nova Logistics",
-      email: "hp8187302@gmail.com",
+      contact_name: "Controlled Delivery Test",
+      business_name: `Verification Corp ${uniqueTag}`,
+      email: `controlled.${uniqueTag}@novacraft-test.internal`,
       services: ["Website creation"],
-      business_context: "Direct inquiry for NovaCraft services.",
-      project_details: "Looking to build a modern high-performance website for our company.",
+      business_context: "Automated end-to-end controlled delivery test.",
+      project_details: `Controlled test inquiry for storage verification ${uniqueTag}.`,
       consent: true,
       source: "website",
-      requester_hash: "test-hash-123",
+      requester_hash: `hash-${uniqueTag}`,
     };
 
-    const res = await saveInquiryToStore(testPayload);
-    expect(res.success).toBe(true);
-    expect(res.id).toBeDefined();
+    // 1. Physically save the inquiry to the storage backend
+    const saveResult = await saveInquiryToStore(testPayload);
+    expect(saveResult.success).toBe(true);
+    expect(saveResult.id).toBeDefined();
 
-    const fetchResult = await getAllInquiriesFromStore();
-    expect(fetchResult.error).toBeNull();
-    const stored = fetchResult.inquiries.find((i) => i.id === res.id);
-    expect(stored).toBeDefined();
-    expect(stored?.contact_name).toBe("Harmanpreet Singh");
-    expect(stored?.email).toBe("hp8187302@gmail.com");
+    // 2. Query the storage backend and confirm the inquiry is physically retrieved
+    const storeState = await getAllInquiriesFromStore();
+    expect(storeState.error).toBeNull();
+    const retrieved = storeState.inquiries.find((item) => item.id === saveResult.id);
+
+    expect(retrieved).toBeDefined();
+    expect(retrieved?.contact_name).toBe("Controlled Delivery Test");
+    expect(retrieved?.email).toBe(testPayload.email);
+    expect(retrieved?.project_details).toBe(testPayload.project_details);
+
+    // 3. Clean up the test inquiry from storage
+    const deleteSuccess = await deleteInquiryFromStore(saveResult.id);
+    expect(deleteSuccess).toBe(true);
+
+    // 4. Verify the test record is no longer present in storage
+    const postCleanupState = await getAllInquiriesFromStore();
+    const stillPresent = postCleanupState.inquiries.find((item) => item.id === saveResult.id);
+    expect(stillPresent).toBeUndefined();
   });
 });

@@ -129,7 +129,23 @@ function ContactPage() {
     }
 
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+    const isValid = Object.keys(errs).length === 0;
+    if (!isValid) {
+      const fieldIdMap: Record<string, string> = {
+        name: "contact-name",
+        email: "contact-email",
+        currentWebsiteOrProfile: "contact-profile",
+        helpNeeded: "contact-help",
+      };
+      const firstErrorKey = Object.keys(errs)[0];
+      const targetId = firstErrorKey ? fieldIdMap[firstErrorKey] : undefined;
+      if (targetId) {
+        setTimeout(() => {
+          document.getElementById(targetId)?.focus();
+        }, 0);
+      }
+    }
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -223,7 +239,7 @@ function ContactPage() {
 
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4">
                   <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-300 block">
-                    Phone / Messaging
+                    Phone
                   </span>
                   <a
                     href={siteConfig.telLink}
@@ -232,9 +248,7 @@ function ContactPage() {
                     <Phone className="size-4 text-emerald-400" />
                     <span>{siteConfig.phoneFormatted}</span>
                   </a>
-                  <p className="mt-1 text-xs text-slate-300">
-                    Available for WhatsApp & calls worldwide
-                  </p>
+                  <p className="mt-1 text-xs text-slate-300">Call NovaCraft</p>
                 </div>
               </div>
 
@@ -303,6 +317,10 @@ function ContactPage() {
                   </Label>
                   <Input
                     id="contact-name"
+                    required
+                    aria-required="true"
+                    aria-invalid={Boolean(errors.name)}
+                    aria-describedby={errors.name ? "contact-name-error" : undefined}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alex Morgan"
@@ -312,7 +330,15 @@ function ContactPage() {
                         : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                     }
                   />
-                  {errors.name && <p className="text-xs text-red-400 font-medium">{errors.name}</p>}
+                  {errors.name && (
+                    <p
+                      id="contact-name-error"
+                      role="alert"
+                      className="text-xs text-red-400 font-medium"
+                    >
+                      {errors.name}
+                    </p>
+                  )}
                 </div>
 
                 {/* Email */}
@@ -326,6 +352,10 @@ function ContactPage() {
                   <Input
                     id="contact-email"
                     type="email"
+                    required
+                    aria-required="true"
+                    aria-invalid={Boolean(errors.email)}
+                    aria-describedby={errors.email ? "contact-email-error" : undefined}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="alex@company.com"
@@ -336,7 +366,13 @@ function ContactPage() {
                     }
                   />
                   {errors.email && (
-                    <p className="text-xs text-red-400 font-medium">{errors.email}</p>
+                    <p
+                      id="contact-email-error"
+                      role="alert"
+                      className="text-xs text-red-400 font-medium"
+                    >
+                      {errors.email}
+                    </p>
                   )}
                 </div>
 
@@ -369,6 +405,10 @@ function ContactPage() {
                   </Label>
                   <Input
                     id="contact-profile"
+                    aria-invalid={Boolean(errors.currentWebsiteOrProfile)}
+                    aria-describedby={
+                      errors.currentWebsiteOrProfile ? "contact-profile-error" : undefined
+                    }
                     value={formData.currentWebsiteOrProfile}
                     onChange={(e) =>
                       setFormData({ ...formData, currentWebsiteOrProfile: e.target.value })
@@ -381,7 +421,11 @@ function ContactPage() {
                     }
                   />
                   {errors.currentWebsiteOrProfile && (
-                    <p className="text-xs text-red-400 font-medium">
+                    <p
+                      id="contact-profile-error"
+                      role="alert"
+                      className="text-xs text-red-400 font-medium"
+                    >
                       {errors.currentWebsiteOrProfile}
                     </p>
                   )}
@@ -398,6 +442,10 @@ function ContactPage() {
                   <Textarea
                     id="contact-help"
                     rows={4}
+                    required
+                    aria-required="true"
+                    aria-invalid={Boolean(errors.helpNeeded)}
+                    aria-describedby={errors.helpNeeded ? "contact-help-error" : undefined}
                     value={formData.helpNeeded}
                     onChange={(e) => setFormData({ ...formData, helpNeeded: e.target.value })}
                     placeholder="Tell us what you would like to create or improve..."
@@ -408,7 +456,13 @@ function ContactPage() {
                     }
                   />
                   {errors.helpNeeded && (
-                    <p className="text-xs text-red-400 font-medium">{errors.helpNeeded}</p>
+                    <p
+                      id="contact-help-error"
+                      role="alert"
+                      className="text-xs text-red-400 font-medium"
+                    >
+                      {errors.helpNeeded}
+                    </p>
                   )}
                 </div>
 

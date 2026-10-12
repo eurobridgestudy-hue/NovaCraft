@@ -51,10 +51,10 @@ export function TermsPage() {
             </div>
             <div className="rounded-xl border border-white/10 bg-[#060c18]/80 p-5 backdrop-blur-md">
               <FileText className="size-5 text-emerald-400 mb-2" />
-              <h3 className="font-semibold text-white text-sm">Full Client IP</h3>
+              <h3 className="font-semibold text-white text-sm">Ownership as Agreed</h3>
               <p className="mt-1 text-xs text-slate-400 leading-relaxed">
                 Upon final project settlement, all custom designs, copy, and code for your website
-                belong to you.
+                belong to you as confirmed in writing.
               </p>
             </div>
             <div className="rounded-xl border border-white/10 bg-[#060c18]/80 p-5 backdrop-blur-md">
@@ -111,16 +111,16 @@ export function TermsPage() {
           <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 backdrop-blur-sm">
             <h2 className="font-display text-2xl text-white">3. Intellectual Property Rights</h2>
             <p className="text-sm leading-relaxed text-slate-300">
-              NovaCraft guarantees clear, unencumbered ownership of delivered work:
+              NovaCraft establishes clear ownership terms for delivered work:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-sm text-slate-300">
               <li>
                 <strong className="text-white">Your Deliverables:</strong> Upon receipt of full
-                payment, all custom design files, markup, scripts, and media generated for your
-                project transfer entirely to you.
+                payment, custom design files, markup, scripts, and media generated specifically for
+                your project transfer to you as agreed in writing in your project scope.
               </li>
               <li>
-                <strong className="text-white">Your Assets:</strong> You retain 100% ownership of
+                <strong className="text-white">Your Assets:</strong> You retain full ownership of
                 your trademarks, brand names, product photography, and supplied materials.
               </li>
               <li>

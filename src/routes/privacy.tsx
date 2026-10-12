@@ -38,29 +38,27 @@ export function PrivacyPage() {
 
       <section className="px-5 py-16 lg:px-10 lg:py-20">
         <div className="mx-auto max-w-4xl space-y-12">
-          {/* Quick Summary Pill Strip */}
+          {/* Quick Summary Strip */}
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-xl border border-white/10 bg-[#060c18]/80 p-5 backdrop-blur-md">
               <ShieldCheck className="size-5 text-cyan-400 mb-2" />
-              <h3 className="font-semibold text-white text-sm">Zero Third-Party Sales</h3>
+              <h3 className="font-semibold text-white text-sm">Direct Communication</h3>
               <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                We never sell, rent, or trade your contact information with advertisers or brokers.
+                Contact information is used solely to discuss your project inquiry.
               </p>
             </div>
             <div className="rounded-xl border border-white/10 bg-[#060c18]/80 p-5 backdrop-blur-md">
               <Lock className="size-5 text-emerald-400 mb-2" />
-              <h3 className="font-semibold text-white text-sm">Encrypted Storage</h3>
+              <h3 className="font-semibold text-white text-sm">No Advertising Trackers</h3>
               <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                Inquiries are encrypted in transit and stored in private cloud databases with no
-                anonymous grants.
+                We do not load third-party ad networks, marketing pixels, or profiling cookies.
               </p>
             </div>
             <div className="rounded-xl border border-white/10 bg-[#060c18]/80 p-5 backdrop-blur-md">
               <CheckCircle2 className="size-5 text-cyan-400 mb-2" />
-              <h3 className="font-semibold text-white text-sm">Full Data Rights</h3>
+              <h3 className="font-semibold text-white text-sm">Erasure Requests</h3>
               <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                Request export or permanent erasure of your inquiry records at any time with one
-                email.
+                Request a copy or deletion of your submitted inquiry messages at any time.
               </p>
             </div>
           </div>

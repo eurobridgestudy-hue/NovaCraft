@@ -115,7 +115,17 @@ function HomePage() {
     }
 
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+    const isValid = Object.keys(errs).length === 0;
+    if (!isValid) {
+      const firstErrorKey = Object.keys(errs)[0];
+      if (firstErrorKey) {
+        // Focus first invalid field after errors render in DOM for proper aria-describedby association
+        setTimeout(() => {
+          document.getElementById(firstErrorKey)?.focus();
+        }, 0);
+      }
+    }
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -179,7 +189,7 @@ function HomePage() {
           id="hero"
           className="relative min-h-[85vh] flex flex-col justify-between px-5 pt-20 pb-16 lg:px-12 lg:pt-28 lg:pb-24"
         >
-          <div className="mx-auto max-w-[1440px] w-full">
+          <div className="mx-auto max-w-[1440px] w-full grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
             {/* Core Outreach Headline & Action */}
             <div className="max-w-4xl">
               {/* Small Factual Audience Line */}
@@ -224,6 +234,75 @@ function HomePage() {
                     <ArrowDownRight className="ml-2 size-4 text-cyan-400" />
                   </a>
                 </Button>
+              </div>
+            </div>
+
+            {/* Right Column: Original, Restrained Website-Interface Concept Visual */}
+            <div className="hidden lg:block">
+              <div className="relative rounded-2xl border border-cyan-400/30 bg-[#060c18]/85 p-6 backdrop-blur-xl shadow-2xl shadow-cyan-950/40">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4 text-xs font-mono text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-white font-medium">Concept Architecture</span>
+                  </div>
+                  <span className="rounded-full bg-cyan-500/10 border border-cyan-400/30 px-2.5 py-0.5 text-[11px] text-cyan-300">
+                    Clean & Fast
+                  </span>
+                </div>
+
+                <div className="mt-5 space-y-4 text-xs">
+                  {/* Mock Nav Bar */}
+                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="size-5 rounded bg-cyan-400/80 flex items-center justify-center text-[10px] text-black font-bold">
+                        N
+                      </div>
+                      <span className="font-semibold text-slate-200">Your Business</span>
+                    </div>
+                    <span className="rounded bg-cyan-400/20 px-2.5 py-1 text-[10px] font-mono text-cyan-300 border border-cyan-400/30 font-medium">
+                      Direct Inquiry CTA
+                    </span>
+                  </div>
+
+                  {/* Mock Hero Proposition */}
+                  <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
+                    <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-wider block font-semibold">
+                      Clear Value Proposition
+                    </span>
+                    <p className="mt-1 font-semibold text-white text-sm">
+                      What you offer & why clients choose you
+                    </p>
+                    <p className="mt-1 text-slate-300 text-[11px] leading-relaxed">
+                      Eliminates guesswork so prospects immediately take the next step.
+                    </p>
+                  </div>
+
+                  {/* 2-Col Service Highlights */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+                      <span className="font-medium text-slate-200 block text-xs">
+                        Primary Offer
+                      </span>
+                      <span className="text-[11px] text-slate-400 mt-0.5 block">
+                        Clear service scope
+                      </span>
+                    </div>
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+                      <span className="font-medium text-slate-200 block text-xs">
+                        Direct Contact
+                      </span>
+                      <span className="text-[11px] text-slate-400 mt-0.5 block">
+                        Zero-friction response
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Highlights Strip */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/10 font-mono text-[11px] text-slate-300">
+                    <span className="text-emerald-400 font-medium">✓ Mobile optimized</span>
+                    <span className="text-cyan-300 font-medium">✓ Direct phone & email</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -650,7 +729,7 @@ function HomePage() {
 
                   <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
                     <span className="font-mono text-xs uppercase tracking-wider text-slate-300 block font-semibold">
-                      Phone & Messaging
+                      Phone
                     </span>
                     <a
                       href={siteConfig.telLink}
@@ -659,9 +738,7 @@ function HomePage() {
                       <Phone className="size-4" />
                       <span>{siteConfig.phoneFormatted}</span>
                     </a>
-                    <p className="mt-1 text-xs text-slate-300">
-                      Available for WhatsApp & calls worldwide
-                    </p>
+                    <p className="mt-1 text-xs text-slate-300">Call NovaCraft</p>
                   </div>
                 </div>
 
@@ -729,6 +806,10 @@ function HomePage() {
                       </Label>
                       <Input
                         id="name"
+                        required
+                        aria-required="true"
+                        aria-invalid={Boolean(errors.name)}
+                        aria-describedby={errors.name ? "name-error" : undefined}
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="e.g. Alex Morgan"
@@ -739,7 +820,13 @@ function HomePage() {
                         }
                       />
                       {errors.name && (
-                        <p className="text-xs text-red-400 font-medium">{errors.name}</p>
+                        <p
+                          id="name-error"
+                          role="alert"
+                          className="text-xs text-red-400 font-medium"
+                        >
+                          {errors.name}
+                        </p>
                       )}
                     </div>
 
@@ -754,6 +841,10 @@ function HomePage() {
                       <Input
                         id="email"
                         type="email"
+                        required
+                        aria-required="true"
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? "email-error" : undefined}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="alex@company.com"
@@ -764,7 +855,13 @@ function HomePage() {
                         }
                       />
                       {errors.email && (
-                        <p className="text-xs text-red-400 font-medium">{errors.email}</p>
+                        <p
+                          id="email-error"
+                          role="alert"
+                          className="text-xs text-red-400 font-medium"
+                        >
+                          {errors.email}
+                        </p>
                       )}
                     </div>
 
@@ -797,6 +894,12 @@ function HomePage() {
                       </Label>
                       <Input
                         id="currentWebsiteOrProfile"
+                        aria-invalid={Boolean(errors.currentWebsiteOrProfile)}
+                        aria-describedby={
+                          errors.currentWebsiteOrProfile
+                            ? "currentWebsiteOrProfile-error"
+                            : undefined
+                        }
                         value={formData.currentWebsiteOrProfile}
                         onChange={(e) =>
                           setFormData({ ...formData, currentWebsiteOrProfile: e.target.value })
@@ -809,7 +912,11 @@ function HomePage() {
                         }
                       />
                       {errors.currentWebsiteOrProfile && (
-                        <p className="text-xs text-red-400 font-medium">
+                        <p
+                          id="currentWebsiteOrProfile-error"
+                          role="alert"
+                          className="text-xs text-red-400 font-medium"
+                        >
                           {errors.currentWebsiteOrProfile}
                         </p>
                       )}
@@ -826,6 +933,10 @@ function HomePage() {
                       <Textarea
                         id="helpNeeded"
                         rows={4}
+                        required
+                        aria-required="true"
+                        aria-invalid={Boolean(errors.helpNeeded)}
+                        aria-describedby={errors.helpNeeded ? "helpNeeded-error" : undefined}
                         value={formData.helpNeeded}
                         onChange={(e) => setFormData({ ...formData, helpNeeded: e.target.value })}
                         placeholder="Tell us what you would like to create or improve..."
@@ -836,7 +947,13 @@ function HomePage() {
                         }
                       />
                       {errors.helpNeeded && (
-                        <p className="text-xs text-red-400 font-medium">{errors.helpNeeded}</p>
+                        <p
+                          id="helpNeeded-error"
+                          role="alert"
+                          className="text-xs text-red-400 font-medium"
+                        >
+                          {errors.helpNeeded}
+                        </p>
                       )}
                     </div>
 

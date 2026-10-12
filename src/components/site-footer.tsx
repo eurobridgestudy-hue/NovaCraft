@@ -69,10 +69,10 @@ export function SiteFooter() {
                   media advice and management for businesses worldwide.
                 </p>
 
-                {/* Worldwide Status Badge */}
+                {/* Worldwide Scope Badge */}
                 <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono text-cyan-300 backdrop-blur-xs">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Verified Studio Operations • Worldwide</span>
+                  <span className="size-2 rounded-full bg-emerald-400" />
+                  <span>Digital Services • Worldwide</span>
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ export function SiteFooter() {
                   className="inline-flex items-center gap-2 transition-colors hover:text-cyan-400"
                 >
                   <Phone className="size-3.5 text-emerald-400" />
-                  <span>{siteConfig.phoneFormatted}</span>
+                  <span>Call NovaCraft: {siteConfig.phoneFormatted}</span>
                 </a>
               </div>
             </div>
@@ -126,7 +126,7 @@ export function SiteFooter() {
                 >
                   <span>Privacy Policy</span>
                   <span className="text-[11px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
-                    GDPR / Global
+                    Data Handling
                   </span>
                 </button>
 
@@ -137,7 +137,7 @@ export function SiteFooter() {
                 >
                   <span>Terms of Engagement</span>
                   <span className="text-[11px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
-                    100% Client IP
+                    Scope & Terms
                   </span>
                 </button>
 
@@ -148,7 +148,7 @@ export function SiteFooter() {
                 >
                   <span>Cookie Notice</span>
                   <span className="text-[11px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
-                    Zero Ad Trackers
+                    Essential Storage
                   </span>
                 </button>
 
@@ -159,7 +159,7 @@ export function SiteFooter() {
                 >
                   <span>Data Protection</span>
                   <span className="text-[11px] font-mono text-slate-500 group-hover:text-cyan-400 transition-colors">
-                    Encrypted Cloud
+                    Inquiry Handling
                   </span>
                 </button>
 
@@ -201,7 +201,7 @@ export function SiteFooter() {
                     className="inline-flex items-center gap-2 font-mono text-xs text-slate-200 transition-colors hover:text-cyan-400"
                   >
                     <Phone className="size-3.5 text-emerald-400" />
-                    <span>{siteConfig.phoneFormatted}</span>
+                    <span>Call NovaCraft: {siteConfig.phoneFormatted}</span>
                   </a>
                 </div>
               </div>
@@ -214,7 +214,6 @@ export function SiteFooter() {
                   <span>Discuss your website</span>
                   <ArrowRight className="size-3.5" />
                 </a>
-                <span className="font-mono text-[10px] text-slate-500">24h Response</span>
               </div>
             </div>
           </div>
@@ -227,9 +226,8 @@ export function SiteFooter() {
                 © {new Date().getFullYear()} NovaCraft. All rights reserved.
               </p>
               <p className="text-[11px] text-slate-500 max-w-xl leading-relaxed">
-                Registered digital operations worldwide. All proprietary website designs, code
-                architectures, visual trademarks, and media assets are protected under international
-                intellectual property law.
+                All proprietary website designs, code architectures, visual trademarks, and media
+                assets are protected under intellectual property law.
               </p>
             </div>
 
@@ -268,14 +266,13 @@ export function SiteFooter() {
               <DialogHeader>
                 <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs">
                   <ShieldCheck className="size-4" />
-                  <span>DATA GOVERNANCE & INTEGRITY</span>
+                  <span>DATA & PRIVACY</span>
                 </div>
                 <DialogTitle className="font-display text-2xl text-white mt-1">
                   NovaCraft Privacy Policy
                 </DialogTitle>
                 <DialogDescription className="text-slate-400 text-xs">
-                  Effective October 2026 • Applicable to all visitors and client inquiries
-                  worldwide.
+                  Applicable to all visitors and client inquiries.
                 </DialogDescription>
               </DialogHeader>
 
@@ -291,29 +288,28 @@ export function SiteFooter() {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">2. Exclusive Business Purpose</h4>
+                  <h4 className="font-semibold text-white">2. Business Purpose</h4>
                   <p className="mt-1">
                     Your details are used solely to assess your website scope, discuss project
                     requirements, and communicate directly regarding web design or social media
-                    services. We never sell, lease, or distribute contact records to advertising
-                    brokers.
+                    services. We do not sell or share your contact details.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">3. Security & Cloud Architecture</h4>
+                  <h4 className="font-semibold text-white">3. Storage & Access</h4>
                   <p className="mt-1">
-                    Inquiry submissions are delivered over TLS 1.3 encrypted transport directly to a
-                    hardened cloud database with strict server-side authorization. Anonymous public
-                    visitors receive zero read access to client submissions.
+                    Inquiry submissions are received by our server and accessed by NovaCraft to
+                    review and reply. Submissions are private and accessible only through our
+                    authenticated dashboard.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-white">4. Your Right to Erasure</h4>
                   <p className="mt-1">
-                    Under international data protection regulations, you may at any time request an
-                    export or permanent deletion of your inquiry messages by emailing{" "}
+                    You may request a copy or permanent deletion of your inquiry messages at any
+                    time by emailing{" "}
                     <a
                       href={`mailto:${siteConfig.contactEmail}`}
                       className="text-cyan-400 underline"
@@ -332,14 +328,13 @@ export function SiteFooter() {
               <DialogHeader>
                 <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs">
                   <Scale className="size-4" />
-                  <span>COMMERCIAL STANDARDS & IP</span>
+                  <span>COMMERCIAL TERMS</span>
                 </div>
                 <DialogTitle className="font-display text-2xl text-white mt-1">
                   Terms of Engagement
                 </DialogTitle>
                 <DialogDescription className="text-slate-400 text-xs">
-                  Effective October 2026 • Professional guidelines for website and social media
-                  projects.
+                  Guidelines for website and social media projects.
                 </DialogDescription>
               </DialogHeader>
 
@@ -349,24 +344,23 @@ export function SiteFooter() {
                   <p className="mt-1">
                     NovaCraft operates on written scope agreements. Deliverables, page counts,
                     milestones, and financial terms are documented and confirmed in writing prior to
-                    commencing production. No hidden charges or surprise billings.
+                    commencing production.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">2. Full Client IP Ownership</h4>
+                  <h4 className="font-semibold text-white">2. Intellectual Property & Scope</h4>
                   <p className="mt-1">
-                    Upon final project settlement, you retain 100% intellectual property ownership
-                    of your custom website design, HTML/CSS/JS codebase, branded graphics, and
-                    bespoke copy created for your engagement.
+                    Ownership of deliverables, custom designs, and website code is confirmed in
+                    writing as part of the project agreement upon completion.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-white">3. Review Checkpoints & Testing</h4>
                   <p className="mt-1">
-                    All website projects include structured revision checkpoints and cross-device
-                    testing on mobile, tablet, and desktop screens before final public deployment.
+                    All website projects include structured revision checkpoints and testing across
+                    modern devices before final deployment.
                   </p>
                 </div>
 
@@ -386,43 +380,39 @@ export function SiteFooter() {
               <DialogHeader>
                 <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs">
                   <Cookie className="size-4" />
-                  <span>TRANSPARENT WEB HYGIENE</span>
+                  <span>COOKIES & STORAGE</span>
                 </div>
                 <DialogTitle className="font-display text-2xl text-white mt-1">
                   Cookie & Tracking Notice
                 </DialogTitle>
                 <DialogDescription className="text-slate-400 text-xs">
-                  Effective October 2026 • Clean, privacy-first technical architecture.
+                  Technical disclosure of browser storage usage.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="mt-6 space-y-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-white/10 pt-4">
                 <div>
-                  <h4 className="font-semibold text-white">
-                    1. Zero Third-Party Advertising Trackers
-                  </h4>
+                  <h4 className="font-semibold text-white">1. No Advertising Trackers</h4>
                   <p className="mt-1">
-                    NovaCraft does not load third-party ad networks, behavioural tracking pixels, or
-                    cross-site profiling scripts. We prioritize fast page load speeds and visitor
-                    respect.
+                    NovaCraft does not use third-party advertising cookies, behavioural tracking
+                    pixels, or cross-site profiling scripts.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">2. Client-Side WebGL Rendering</h4>
+                  <h4 className="font-semibold text-white">2. Visual Rendering</h4>
                   <p className="mt-1">
-                    Our 3D cinematic visual scene runs locally in your browser using Three.js and
-                    hardware acceleration. No biometric, mouse tracking, or spatial telemetry is
-                    transmitted externally.
+                    Our 3D visual background runs directly in your browser using Three.js and
+                    hardware acceleration. No visitor telemetry or personal data is collected from
+                    this visual.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">3. Essential Functional Storage Only</h4>
+                  <h4 className="font-semibold text-white">3. Essential Functional Storage</h4>
                   <p className="mt-1">
-                    We use only essential browser storage for authentication tokens in the
-                    restricted admin portal and temporary in-memory form recovery to prevent lost
-                    drafts.
+                    Standard browser storage is used solely for necessary operational functions,
+                    such as admin login session authentication.
                   </p>
                 </div>
               </div>
@@ -434,41 +424,38 @@ export function SiteFooter() {
               <DialogHeader>
                 <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs">
                   <Shield className="size-4" />
-                  <span>SECURITY ARCHITECTURE</span>
+                  <span>INQUIRY HANDLING</span>
                 </div>
                 <DialogTitle className="font-display text-2xl text-white mt-1">
                   Data Protection & Inquiries
                 </DialogTitle>
                 <DialogDescription className="text-slate-400 text-xs">
-                  Infrastructure security standards for client communications.
+                  How we process and protect client communications.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="mt-6 space-y-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-white/10 pt-4">
                 <div>
-                  <h4 className="font-semibold text-white">1. Secure Server-Function Gateways</h4>
+                  <h4 className="font-semibold text-white">1. Submission Processing</h4>
                   <p className="mt-1">
-                    Inquiry submissions are validated through protected server functions using
-                    privileged service role credentials. Anonymous web visitors receive zero direct
-                    table grants on the underlying database.
+                    Inquiry submissions are delivered through server functions and stored for
+                    customer communication. Submissions are accessible only through our
+                    password-protected admin dashboard.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">
-                    2. Spam Protection Without Intrusive Captchas
-                  </h4>
+                  <h4 className="font-semibold text-white">2. Spam Filtering</h4>
                   <p className="mt-1">
-                    We use invisible honeypot trapping to silently drop automated bots without
-                    burdening genuine business owners with annoying image captcha puzzles.
+                    We use an invisible honeypot field to filter automated spam without interrupting
+                    genuine business visitors.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-white">3. Direct Data Officer Reach</h4>
+                  <h4 className="font-semibold text-white">3. Direct Contact</h4>
                   <p className="mt-1">
-                    For any questions regarding stored inquiries, contact our studio administrator
-                    directly at{" "}
+                    For any questions regarding stored inquiries, contact our studio directly at{" "}
                     <a
                       href={`mailto:${siteConfig.contactEmail}`}
                       className="text-cyan-400 underline"

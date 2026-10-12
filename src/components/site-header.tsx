@@ -123,7 +123,13 @@ export function SiteHeader() {
                 size="lg"
                 className="w-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold text-base"
               >
-                <a href={contactTarget} onClick={() => setOpen(false)}>
+                <a
+                  href={contactTarget}
+                  onClick={(e) => {
+                    handleNavClick(e, contactTarget);
+                    setOpen(false);
+                  }}
+                >
                   <span>Discuss your website</span>
                   <ArrowRight className="ml-2 size-4" />
                 </a>
