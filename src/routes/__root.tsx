@@ -80,6 +80,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "NovaCraft | Websites for Businesses & Social Media Support" },
+      {
+        name: "description",
+        content:
+          "NovaCraft creates clear, professional websites and offers social media advice and management for businesses worldwide. Discuss your website project.",
+      },
+      {
+        property: "og:title",
+        content: "NovaCraft | Websites for Businesses & Social Media Support",
+      },
+      {
+        property: "og:description",
+        content:
+          "NovaCraft creates clear, professional websites and offers social media advice and management for businesses worldwide. Discuss your website project.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

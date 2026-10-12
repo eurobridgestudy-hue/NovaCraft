@@ -11,23 +11,30 @@ export const serviceValues = [
   "Social media management",
 ] as const;
 
-export const quoteRequestSchema = z.object({
-  contactName: z.string().trim().min(2, "Please enter your name.").max(100),
-  businessName: z.string().trim().min(2, "Please enter your business name.").max(120),
-  email: z.string().trim().email("Please enter a valid email address.").max(255),
-  services: z.array(z.enum(serviceValues)).min(1, "Choose at least one service.").max(3),
-  businessContext: z
+export const inquirySchema = z.object({
+  name: z
     .string()
     .trim()
-    .min(10, "Tell us a little more about your business.")
-    .max(1000),
-  projectDetails: z
+    .min(1, "Please enter your name.")
+    .max(100, "Name must be 100 characters or fewer."),
+  email: z
     .string()
     .trim()
-    .min(20, "Please share a little more about the project.")
-    .max(3000),
-  consent: z.literal(true, { errorMap: () => ({ message: "Please confirm before submitting." }) }),
-  website: z.string().max(0).optional().default(""),
+    .email("Please enter a valid email address.")
+    .max(255, "Email address is too long."),
+  businessName: z.string().trim().max(120).optional().default(""),
+  currentWebsiteOrProfile: z.string().trim().max(255).optional().default(""),
+  helpNeeded: z
+    .string()
+    .trim()
+    .min(1, "Please tell us what you need help with.")
+    .max(3000, "Inquiry is too long."),
+  services: z.array(z.enum(serviceValues)).optional().default(["Website creation"]),
+  website: z.string().max(0).optional().default(""), // Honeypot anti-spam
 });
 
-export type QuoteRequestInput = zType.infer<typeof quoteRequestSchema>;
+export type InquiryInput = zType.infer<typeof inquirySchema>;
+
+// Backwards-compatible export alias
+export const quoteRequestSchema = inquirySchema;
+export type QuoteRequestInput = InquiryInput;

@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Mail, Menu, Phone, Sparkles, X } from "lucide-react";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { ArrowRight, Mail, Menu, Phone, X } from "lucide-react";
 import { useState } from "react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -8,87 +8,72 @@ import { siteConfig } from "@/lib/site-config";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const routerState = useRouterState();
+  const isHome = routerState.location.pathname === "/";
+
+  // Section links work seamlessly from home (in-page hash) and subpages (/#section)
+  const navItems = [
+    { label: "Services", to: isHome ? "#services" : "/#services" },
+    { label: "Approach", to: isHome ? "#approach" : "/#approach" },
+    { label: "About", to: isHome ? "#about" : "/#about" },
+    { label: "Contact", to: isHome ? "#contact" : "/#contact" },
+  ];
+
+  const contactTarget = isHome ? "#contact" : "/#contact";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-md transition-all">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#03060a]/90 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 lg:px-10">
-        {/* Brand Logo */}
+        {/* NovaCraft Wordmark */}
         <Link
           to="/"
           className="group flex items-center transition-opacity hover:opacity-95"
-          aria-label="NovaCraft Studio Home"
+          aria-label="NovaCraft Home"
         >
-          <BrandLogo size="md" withTagline />
+          <BrandLogo size="md" />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
-          <Link
-            to="/services"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary font-semibold" }}
-          >
-            Services
-          </Link>
-          <Link
-            to="/"
-            hash="showcase"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-          >
-            Selected Works
-          </Link>
-          <Link
-            to="/process"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary font-semibold" }}
-          >
-            Process
-          </Link>
-          <Link
-            to="/about"
-            className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
-            activeProps={{ className: "text-primary font-semibold" }}
-          >
-            About Studio
-          </Link>
+        {/* Desktop Navigation: Services · Approach · About · Contact */}
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.to}
+              className="text-sm font-medium text-slate-300 transition-colors hover:text-cyan-400"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
 
-        {/* Availability Badge, Phone Link & CTA Button */}
-        <div className="hidden items-center gap-4 sm:flex">
+        {/* Desktop Phone Contact & Primary CTA Button */}
+        <div className="hidden items-center gap-5 sm:flex">
           <a
             href={siteConfig.telLink}
-            className="hidden items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-cyan-400 transition-colors xl:flex"
-            title="Call NovaCraft Studio"
+            className="hidden items-center gap-2 font-mono text-xs text-slate-400 hover:text-cyan-400 transition-colors xl:flex"
+            title="Call NovaCraft direct"
           >
-            <Phone className="size-3 text-cyan-400" />
+            <Phone className="size-3.5 text-cyan-400" />
             <span>{siteConfig.phoneFormatted}</span>
           </a>
-
-          <div className="hidden items-center gap-2 rounded-full border border-border/70 bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-xs lg:flex">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500"></span>
-            </span>
-            <span>{siteConfig.availabilityStatus}</span>
-          </div>
 
           <Button
             asChild
             size="default"
-            className="shadow-sm bg-cyan-500 text-black hover:bg-cyan-400 font-semibold"
+            className="bg-cyan-500 text-black hover:bg-cyan-400 font-semibold shadow-sm transition-all"
           >
-            <Link to="/contact">
-              <span>Start Project</span>
-              <ArrowUpRight className="ml-1 size-4" />
-            </Link>
+            <a href={contactTarget}>
+              <span>Discuss your website</span>
+              <ArrowRight className="ml-1.5 size-4" />
+            </a>
           </Button>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
+        {/* Mobile Navigation Toggle */}
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden"
+          className="lg:hidden text-slate-300 hover:text-white"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-label={open ? "Close menu" : "Open menu"}
@@ -97,68 +82,46 @@ export function SiteHeader() {
         </Button>
       </div>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Accessible Mobile Drawer */}
       {open && (
         <nav
-          className="border-t border-border bg-background/98 px-6 py-8 backdrop-blur-xl lg:hidden"
-          aria-label="Mobile navigation"
+          className="border-t border-white/10 bg-[#050a12]/98 px-6 py-8 backdrop-blur-2xl lg:hidden"
+          aria-label="Mobile navigation menu"
         >
           <div className="flex flex-col gap-6">
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
-              <Sparkles className="size-3.5 text-accent" />
-              <span>{siteConfig.availabilityStatus}</span>
-            </div>
-
-            <div className="flex flex-col divide-y divide-border/60">
-              <Link
-                to="/services"
-                onClick={() => setOpen(false)}
-                className="py-3.5 font-display text-3xl font-medium tracking-tight text-foreground transition-colors hover:text-primary"
-              >
-                Services
-              </Link>
-              <Link
-                to="/"
-                hash="showcase"
-                onClick={() => setOpen(false)}
-                className="py-3.5 font-display text-3xl font-medium tracking-tight text-foreground transition-colors hover:text-primary"
-              >
-                Selected Works
-              </Link>
-              <Link
-                to="/process"
-                onClick={() => setOpen(false)}
-                className="py-3.5 font-display text-3xl font-medium tracking-tight text-foreground transition-colors hover:text-primary"
-              >
-                Process
-              </Link>
-              <Link
-                to="/about"
-                onClick={() => setOpen(false)}
-                className="py-3.5 font-display text-3xl font-medium tracking-tight text-foreground transition-colors hover:text-primary"
-              >
-                About Studio
-              </Link>
+            <div className="flex flex-col divide-y divide-white/10">
+              {navItems.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.to}
+                  onClick={() => setOpen(false)}
+                  className="py-3.5 font-display text-2xl font-medium tracking-tight text-slate-100 hover:text-cyan-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              ))}
             </div>
 
             <div className="pt-2">
               <Button
                 asChild
                 size="lg"
-                className="w-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold"
+                className="w-full bg-cyan-500 text-black hover:bg-cyan-400 font-semibold text-base"
               >
-                <Link to="/contact" onClick={() => setOpen(false)}>
-                  Request a Quote <ArrowUpRight className="ml-1.5 size-4" />
-                </Link>
+                <a href={contactTarget} onClick={() => setOpen(false)}>
+                  <span>Discuss your website</span>
+                  <ArrowRight className="ml-2 size-4" />
+                </a>
               </Button>
             </div>
 
-            <div className="border-t border-border pt-4 space-y-2 text-xs text-muted-foreground">
+            {/* Direct Contact Links */}
+            <div className="border-t border-white/10 pt-4 space-y-2.5 text-xs text-slate-400">
               <p className="flex items-center gap-2">
                 <Mail className="size-3.5 text-cyan-400 shrink-0" />
                 <a
                   href={`mailto:${siteConfig.contactEmail}`}
-                  className="font-mono text-foreground hover:text-cyan-400 transition-colors"
+                  className="font-mono hover:text-white transition-colors"
                 >
                   {siteConfig.contactEmail}
                 </a>
@@ -167,7 +130,7 @@ export function SiteHeader() {
                 <Phone className="size-3.5 text-emerald-400 shrink-0" />
                 <a
                   href={siteConfig.telLink}
-                  className="font-mono text-foreground hover:text-cyan-400 transition-colors"
+                  className="font-mono hover:text-white transition-colors"
                 >
                   {siteConfig.phoneFormatted}
                 </a>
