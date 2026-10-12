@@ -14,4 +14,21 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+
+  it("matches dedicated pages for /privacy and /terms", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    const privacyMatches = router.matchRoutes("/privacy");
+    expect(privacyMatches.at(-1)?.routeId).toBe("/privacy");
+
+    const termsMatches = router.matchRoutes("/terms");
+    expect(termsMatches.at(-1)?.routeId).toBe("/terms");
+  });
+
+  it("matches the secured /admin route", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    const adminMatches = router.matchRoutes("/admin");
+    expect(adminMatches.at(-1)?.routeId).toBe("/admin");
+  });
 });

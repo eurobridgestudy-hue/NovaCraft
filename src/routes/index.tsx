@@ -23,7 +23,6 @@ import { submitInquiry } from "@/lib/quote.functions";
 import {
   approachSteps,
   businessNeeds,
-  conceptDemonstration,
   siteConfig,
   socialMediaServices,
   websiteCreationGoals,
@@ -156,9 +155,9 @@ function HomePage() {
           id="hero"
           className="relative min-h-[85vh] flex flex-col justify-between px-5 pt-20 pb-16 lg:px-12 lg:pt-28 lg:pb-24"
         >
-          <div className="mx-auto max-w-[1440px] w-full grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
-            {/* Left Column: Core Outreach Headline & Action */}
-            <div>
+          <div className="mx-auto max-w-[1440px] w-full">
+            {/* Core Outreach Headline & Action */}
+            <div className="max-w-4xl">
               {/* Small Factual Audience Line */}
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 py-1 text-xs font-mono text-cyan-300 backdrop-blur-md">
                 <span className="size-2 rounded-full bg-cyan-400" />
@@ -166,7 +165,7 @@ function HomePage() {
               </div>
 
               {/* Main Headline */}
-              <h1 className="mt-8 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] text-slate-100 max-w-5xl">
+              <h1 className="mt-8 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] text-slate-100">
                 A website that makes your business easier to choose.
               </h1>
 
@@ -201,75 +200,6 @@ function HomePage() {
                     <ArrowDownRight className="ml-2 size-4 text-cyan-400" />
                   </a>
                 </Button>
-              </div>
-            </div>
-
-            {/* Right Column: Original, Restrained Website-Interface Concept Visual */}
-            <div className="hidden lg:block">
-              <div className="relative rounded-2xl border border-cyan-400/30 bg-[#060c18]/85 p-6 backdrop-blur-xl shadow-2xl shadow-cyan-950/40">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 text-xs font-mono text-slate-300">
-                  <div className="flex items-center gap-2">
-                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
-                    <span className="text-white font-medium">Concept Architecture</span>
-                  </div>
-                  <span className="rounded-full bg-cyan-500/10 border border-cyan-400/30 px-2.5 py-0.5 text-[11px] text-cyan-300">
-                    Clean & Fast
-                  </span>
-                </div>
-
-                <div className="mt-5 space-y-4 text-xs">
-                  {/* Mock Nav Bar */}
-                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3">
-                    <div className="flex items-center gap-2">
-                      <div className="size-5 rounded bg-cyan-400/80 flex items-center justify-center text-[10px] text-black font-bold">
-                        N
-                      </div>
-                      <span className="font-semibold text-slate-200">Your Business</span>
-                    </div>
-                    <span className="rounded bg-cyan-400/20 px-2.5 py-1 text-[10px] font-mono text-cyan-300 border border-cyan-400/30 font-medium">
-                      Direct Inquiry CTA
-                    </span>
-                  </div>
-
-                  {/* Mock Hero Proposition */}
-                  <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
-                    <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-wider block font-semibold">
-                      Clear Value Proposition
-                    </span>
-                    <p className="mt-1 font-semibold text-white text-sm">
-                      What you offer & why clients choose you
-                    </p>
-                    <p className="mt-1 text-slate-300 text-[11px] leading-relaxed">
-                      Eliminates guesswork so prospects immediately take the next step.
-                    </p>
-                  </div>
-
-                  {/* 2-Col Service Highlights */}
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-                      <span className="font-medium text-slate-200 block text-xs">
-                        Primary Offer
-                      </span>
-                      <span className="text-[11px] text-slate-400 mt-0.5 block">
-                        Clear service scope
-                      </span>
-                    </div>
-                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
-                      <span className="font-medium text-slate-200 block text-xs">
-                        Direct Contact
-                      </span>
-                      <span className="text-[11px] text-slate-400 mt-0.5 block">
-                        Zero-friction response
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Highlights Strip */}
-                  <div className="flex items-center justify-between pt-2 border-t border-white/10 font-mono text-[11px] text-slate-300">
-                    <span className="text-emerald-400 font-medium">✓ Mobile optimized</span>
-                    <span className="text-cyan-300 font-medium">✓ Direct phone & email</span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
