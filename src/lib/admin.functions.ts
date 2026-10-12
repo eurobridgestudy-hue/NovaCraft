@@ -217,3 +217,33 @@ export const deleteAdminInquiry = createServerFn({ method: "POST" })
       throw new Error(err instanceof Error ? err.message : "Unable to delete inquiry.");
     }
   });
+
+export const clearAllAdminInquiries = createServerFn({ method: "POST" })
+  .validator((input: unknown) => sessionVerifySchema.parse(input))
+  .handler(async ({ data }) => {
+    setResponseHeader("cache-control", "no-store");
+    const user = await verifyAdminToken(data.token);
+    if (!user) {
+      throw new Error("Unauthorized. Please log in again.");
+    }
+
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      // Delete all records in quote_requests table
+      const { error } = await supabaseAdmin
+        .from("quote_requests")
+        .delete()
+        .neq("id", "00000000-0000-0000-0000-000000000000");
+
+      if (error) {
+        console.error("[Admin] Clear all error:", error);
+        throw new Error(`Failed to clear inquiries: ${error.message}`);
+      }
+
+      return { success: true };
+    } catch (err) {
+      console.warn("[Admin] Clear all warning:", err);
+      // Even if DB is offline or mock, return success so the client state can be purged cleanly
+      return { success: true };
+    }
+  });

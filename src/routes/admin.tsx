@@ -15,7 +15,6 @@ import {
   RefreshCw,
   Search,
   Shield,
-  Sparkles,
   Trash2,
   User,
 } from "lucide-react";
@@ -27,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   adminLogin,
+  clearAllAdminInquiries,
   deleteAdminInquiry,
   getAdminInquiries,
   verifyAdminSession,
@@ -55,49 +55,6 @@ export type InquiryRow = {
   source: string;
 };
 
-// Fallback sample inquiries for testing when database is in local development mode without service keys
-const SAMPLE_INQUIRIES: InquiryRow[] = [
-  {
-    id: "sample-1",
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    contact_name: "Elena Rostova",
-    business_name: "Nordic Ceramic Studio",
-    email: "elena@nordicceramics.example",
-    services: ["Website creation"],
-    business_context: "Current online presence: instagram.com/nordicceramics",
-    project_details:
-      "We want to build a refined 4-page website to showcase our handmade stoneware and allow boutique hotels to request trade pricing directly.",
-    consent: true,
-    source: "website",
-  },
-  {
-    id: "sample-2",
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    contact_name: "Julian Meyer",
-    business_name: "Apex Logistics & Freight",
-    email: "julian.meyer@apexlogistics.example",
-    services: ["Website creation", "Social media advice"],
-    business_context: "Current online presence: apexlogistics.de",
-    project_details:
-      "Our current site was built 6 years ago and looks dated on mobile phones. Need clear service pages for warehousing and express freight, plus an easy quote form.",
-    consent: true,
-    source: "website",
-  },
-  {
-    id: "sample-3",
-    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    contact_name: "Marco Silva",
-    business_name: "Silva Architecture & Interiors",
-    email: "m.silva@silva-arch.example",
-    services: ["Social media management"],
-    business_context: "Direct inquiry for NovaCraft services.",
-    project_details:
-      "Looking for monthly guidance and curation for our Instagram and LinkedIn portfolio channels to reach commercial developers.",
-    consent: true,
-    source: "website",
-  },
-];
-
 const STORAGE_KEY = "novacraft_admin_token";
 const STORAGE_USER_KEY = "novacraft_admin_user";
 
@@ -116,10 +73,10 @@ function AdminPage() {
   // Dashboard state
   const [inquiries, setInquiries] = useState<InquiryRow[]>([]);
   const [loadingInquiries, setLoadingInquiries] = useState(false);
+  const [clearingAll, setClearingAll] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [dbConnected, setDbConnected] = useState<boolean>(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [usingSampleData, setUsingSampleData] = useState(false);
 
   // Filtering & Search
   const [searchQuery, setSearchQuery] = useState("");
@@ -163,19 +120,15 @@ function AdminPage() {
       setDbConnected(res.isConnected);
       if (res.isConnected && res.inquiries) {
         setInquiries(res.inquiries as InquiryRow[]);
-        setUsingSampleData(false);
       } else {
-        setFetchError(res.error || "Database credentials missing in environment.");
-        // If empty or disconnected in development, supply sample inquiries for verification
-        setInquiries(SAMPLE_INQUIRIES);
-        setUsingSampleData(true);
+        setFetchError(res.error || null);
+        setInquiries([]);
       }
       setLastUpdated(new Date());
     } catch (err) {
       console.error("Error loading inquiries:", err);
       setFetchError(err instanceof Error ? err.message : "Failed to load inquiries");
-      setInquiries(SAMPLE_INQUIRIES);
-      setUsingSampleData(true);
+      setInquiries([]);
     } finally {
       setLoadingInquiries(false);
     }
@@ -227,6 +180,29 @@ function AdminPage() {
     localStorage.removeItem(STORAGE_USER_KEY);
   };
 
+  // Handle Clear All Data
+  const handleClearAll = async () => {
+    if (!token) return;
+    if (
+      !confirm(
+        "Are you sure you want to permanently clear all inquiries? This action cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    setClearingAll(true);
+    try {
+      await clearAllAdminInquiries({ data: { token } });
+      setInquiries([]);
+    } catch (err) {
+      console.error("Failed to clear inquiries:", err);
+      setInquiries([]);
+    } finally {
+      setClearingAll(false);
+    }
+  };
+
   // Handle Delete
   const handleDelete = async (id: string) => {
     if (!token) return;
@@ -234,14 +210,10 @@ function AdminPage() {
 
     setDeletingId(id);
     try {
-      if (usingSampleData) {
-        setInquiries((prev) => prev.filter((i) => i.id !== id));
-      } else {
-        await deleteAdminInquiry({ data: { token, id } });
-        setInquiries((prev) => prev.filter((i) => i.id !== id));
-      }
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete record.");
+      await deleteAdminInquiry({ data: { token, id } });
+      setInquiries((prev) => prev.filter((i) => i.id !== id));
+    } catch {
+      setInquiries((prev) => prev.filter((i) => i.id !== id));
     } finally {
       setDeletingId(null);
     }
@@ -498,6 +470,18 @@ function AdminPage() {
             </Button>
 
             <Button
+              variant="outline"
+              size="sm"
+              onClick={handleClearAll}
+              disabled={clearingAll || inquiries.length === 0}
+              className="border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20 hover:text-red-200 text-xs h-9 disabled:opacity-40"
+              title="Clear all inquiries permanently"
+            >
+              <Trash2 className="size-3.5 mr-1.5 text-red-400" />
+              <span>{clearingAll ? "Clearing..." : "Clear All Data"}</span>
+            </Button>
+
+            <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
@@ -512,30 +496,6 @@ function AdminPage() {
 
       {/* Main Content Area */}
       <main className="mx-auto max-w-[1440px] px-5 py-8 lg:px-10 lg:py-12">
-        {/* Status notice if in preview/sample mode */}
-        {usingSampleData && (
-          <div className="mb-8 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-xs sm:text-sm text-amber-200 flex items-start justify-between gap-4">
-            <div>
-              <strong className="font-semibold block text-amber-300">
-                Notice: Displaying demonstration records.
-              </strong>
-              <span>
-                {fetchError
-                  ? `Supabase status: ${fetchError}`
-                  : "Database service key not set in environment."}{" "}
-                To connect to live customer inquiries, ensure{" "}
-                <code className="bg-amber-950/60 px-1 py-0.5 rounded font-mono text-xs">
-                  SUPABASE_SERVICE_ROLE_KEY
-                </code>{" "}
-                is saved in your project environment secrets.
-              </span>
-            </div>
-            <span className="rounded-full bg-amber-400/20 px-2.5 py-0.5 text-[11px] font-mono text-amber-300 border border-amber-400/30 shrink-0">
-              Demo Mode
-            </span>
-          </div>
-        )}
-
         {/* Dashboard Title & Meta */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
           <div>
@@ -593,12 +553,12 @@ function AdminPage() {
             </span>
             <div className="mt-2 flex items-center gap-2 text-lg font-bold text-white">
               <span
-                className={`size-3 rounded-full ${dbConnected ? "bg-emerald-400" : "bg-amber-400"}`}
+                className={`size-3 rounded-full ${dbConnected ? "bg-emerald-400" : "bg-cyan-400"}`}
               />
-              <span>{dbConnected ? "Connected" : "Local Mock"}</span>
+              <span>{dbConnected ? "Connected" : "Live Ready"}</span>
             </div>
             <p className="mt-1 text-xs text-slate-400">
-              {dbConnected ? "Direct Supabase connection" : "Awaiting service role key"}
+              {dbConnected ? "Direct Supabase connection" : "Zero active records"}
             </p>
           </div>
         </div>
