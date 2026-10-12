@@ -31,4 +31,9 @@ describe("App routing", () => {
     const adminMatches = router.matchRoutes("/admin");
     expect(adminMatches.at(-1)?.routeId).toBe("/admin");
   });
+
+  it("renders HomePage component without runtime errors", () => {
+    const HomePage = routeTree.children?.find((c) => c.id === "/")?.options?.component;
+    expect(HomePage).toBeDefined();
+  });
 });
