@@ -156,36 +156,8 @@ export const getAdminInquiries = createServerFn({ method: "POST" })
       throw new Error("Unauthorized. Please log in again.");
     }
 
-    try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { data: rows, error } = await supabaseAdmin
-        .from("quote_requests")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("[Admin] Error fetching inquiries from Supabase:", error);
-        return {
-          inquiries: [],
-          error: error.message,
-          isConnected: false,
-        };
-      }
-
-      return {
-        inquiries: rows || [],
-        error: null,
-        isConnected: true,
-      };
-    } catch (err) {
-      console.error("[Admin] Supabase client error:", err);
-      const msg = err instanceof Error ? err.message : "Unable to reach database.";
-      return {
-        inquiries: [],
-        error: msg,
-        isConnected: false,
-      };
-    }
+    const { getAllInquiriesFromStore } = await import("./inquiry-store.server");
+    return await getAllInquiriesFromStore();
   });
 
 const deleteInputSchema = z.object({
@@ -202,20 +174,9 @@ export const deleteAdminInquiry = createServerFn({ method: "POST" })
       throw new Error("Unauthorized. Please log in again.");
     }
 
-    try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { error } = await supabaseAdmin.from("quote_requests").delete().eq("id", data.id);
-
-      if (error) {
-        console.error("[Admin] Delete error:", error);
-        throw new Error(`Failed to delete inquiry: ${error.message}`);
-      }
-
-      return { success: true };
-    } catch (err) {
-      console.error("[Admin] Delete error:", err);
-      throw new Error(err instanceof Error ? err.message : "Unable to delete inquiry.");
-    }
+    const { deleteInquiryFromStore } = await import("./inquiry-store.server");
+    await deleteInquiryFromStore(data.id);
+    return { success: true };
   });
 
 export const clearAllAdminInquiries = createServerFn({ method: "POST" })
@@ -227,23 +188,7 @@ export const clearAllAdminInquiries = createServerFn({ method: "POST" })
       throw new Error("Unauthorized. Please log in again.");
     }
 
-    try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      // Delete all records in quote_requests table
-      const { error } = await supabaseAdmin
-        .from("quote_requests")
-        .delete()
-        .neq("id", "00000000-0000-0000-0000-000000000000");
-
-      if (error) {
-        console.error("[Admin] Clear all error:", error);
-        throw new Error(`Failed to clear inquiries: ${error.message}`);
-      }
-
-      return { success: true };
-    } catch (err) {
-      console.warn("[Admin] Clear all warning:", err);
-      // Even if DB is offline or mock, return success so the client state can be purged cleanly
-      return { success: true };
-    }
+    const { clearAllInquiriesFromStore } = await import("./inquiry-store.server");
+    await clearAllInquiriesFromStore();
+    return { success: true };
   });

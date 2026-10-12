@@ -9,7 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { siteConfig } from "@/lib/site-config";
 import { submitInquiry } from "@/lib/quote.functions";
-import type { InquiryInput } from "@/lib/quote-schema";
+import {
+  type InquiryInput,
+  isValidEmailFormat,
+  isValidInquiryMessage,
+  isValidNameFormat,
+  isValidOnlinePresence,
+} from "@/lib/quote-schema";
 
 type ContactSearch = {
   plan?: string | undefined;
@@ -56,6 +62,8 @@ type FormState = {
 type FormErrors = {
   name?: string;
   email?: string;
+  businessName?: string;
+  currentWebsiteOrProfile?: string;
   helpNeeded?: string;
 };
 
@@ -90,14 +98,34 @@ function ContactPage() {
   const validate = (): boolean => {
     const errs: FormErrors = {};
 
-    if (!formData.name.trim()) {
+    const nameTrimmed = formData.name.trim();
+    if (!nameTrimmed) {
       errs.name = "Please enter your name.";
+    } else if (!isValidNameFormat(nameTrimmed)) {
+      errs.name = "Please enter a valid contact or business name containing letters.";
     }
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      errs.email = "Please enter a valid email address.";
+
+    const emailTrimmed = formData.email.trim();
+    if (!emailTrimmed) {
+      errs.email = "Please enter your email address.";
+    } else if (!isValidEmailFormat(emailTrimmed)) {
+      errs.email = "Please enter a complete, valid email address (e.g. alex@company.com).";
     }
-    if (!formData.helpNeeded.trim()) {
+
+    const presenceTrimmed = formData.currentWebsiteOrProfile.trim();
+    if (presenceTrimmed && !isValidOnlinePresence(presenceTrimmed)) {
+      errs.currentWebsiteOrProfile =
+        "Please enter a valid website (e.g. yoursite.com) or social profile (e.g. @yourbusiness).";
+    }
+
+    const helpTrimmed = formData.helpNeeded.trim();
+    if (!helpTrimmed) {
       errs.helpNeeded = "Please tell us what you need help with.";
+    } else if (helpTrimmed.length < 5) {
+      errs.helpNeeded =
+        "Please provide a bit more detail about your project (at least 5 characters).";
+    } else if (!isValidInquiryMessage(helpTrimmed)) {
+      errs.helpNeeded = "Please enter a clear project inquiry describing your requirements.";
     }
 
     setErrors(errs);
@@ -346,8 +374,17 @@ function ContactPage() {
                       setFormData({ ...formData, currentWebsiteOrProfile: e.target.value })
                     }
                     placeholder="e.g. instagram.com/mybusiness or yoursite.com"
-                    className="border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                    className={
+                      errors.currentWebsiteOrProfile
+                        ? "border-red-400"
+                        : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                    }
                   />
+                  {errors.currentWebsiteOrProfile && (
+                    <p className="text-xs text-red-400 font-medium">
+                      {errors.currentWebsiteOrProfile}
+                    </p>
+                  )}
                 </div>
 
                 {/* What do you need help with? */}

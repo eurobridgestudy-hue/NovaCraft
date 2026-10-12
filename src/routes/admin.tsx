@@ -118,12 +118,12 @@ function AdminPage() {
     try {
       const res = await getAdminInquiries({ data: { token: sessionToken } });
       setDbConnected(res.isConnected);
-      if (res.isConnected && res.inquiries) {
+      if (res.inquiries && Array.isArray(res.inquiries)) {
         setInquiries(res.inquiries as InquiryRow[]);
       } else {
-        setFetchError(res.error || null);
         setInquiries([]);
       }
+      setFetchError(res.error || null);
       setLastUpdated(new Date());
     } catch (err) {
       console.error("Error loading inquiries:", err);

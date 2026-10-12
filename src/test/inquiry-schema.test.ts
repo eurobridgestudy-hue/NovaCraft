@@ -29,6 +29,21 @@ describe("inquirySchema validation", () => {
     expect(parsed.name).toBe("T");
   });
 
+  it("accepts realistic full names and valid emails like Harmanpreet Singh", () => {
+    const input = {
+      name: "HARMANPREET SINGH",
+      email: "hp8187302@gmail.com",
+      helpNeeded: "We need a clean website to support our outreach to local companies.",
+    };
+
+    const parsed = inquirySchema.parse(input);
+    expect(parsed.name).toBe("HARMANPREET SINGH");
+    expect(parsed.email).toBe("hp8187302@gmail.com");
+    expect(parsed.helpNeeded).toBe(
+      "We need a clean website to support our outreach to local companies.",
+    );
+  });
+
   it("accepts social profile or website without https", () => {
     const input = {
       name: "Sarah",
@@ -42,14 +57,58 @@ describe("inquirySchema validation", () => {
     expect(parsed.currentWebsiteOrProfile).toBe("instagram.com/sarahspottery");
   });
 
-  it("rejects invalid emails", () => {
-    const input = {
-      name: "Alex",
-      email: "invalid-email-format",
-      helpNeeded: "Need a quote.",
-    };
+  it("rejects invalid emails or emails without a valid domain extension", () => {
+    expect(() =>
+      inquirySchema.parse({
+        name: "Alex",
+        email: "invalid-email-format",
+        helpNeeded: "Need a quote.",
+      }),
+    ).toThrow();
 
-    expect(() => inquirySchema.parse(input)).toThrow();
+    expect(() =>
+      inquirySchema.parse({
+        name: "Alex",
+        email: "alex@nodomain",
+        helpNeeded: "Need a quote.",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects random number-only or symbol-only names", () => {
+    expect(() =>
+      inquirySchema.parse({
+        name: "12345678",
+        email: "valid@company.com",
+        helpNeeded: "Need a new website.",
+      }),
+    ).toThrow();
+
+    expect(() =>
+      inquirySchema.parse({
+        name: "!@#$%^&*",
+        email: "valid@company.com",
+        helpNeeded: "Need a new website.",
+      }),
+    ).toThrow();
+  });
+
+  it("rejects repetitive spam messages or pure number messages", () => {
+    expect(() =>
+      inquirySchema.parse({
+        name: "Valid Name",
+        email: "valid@company.com",
+        helpNeeded: "aaaaaaaaaaaaaaaaaaaa",
+      }),
+    ).toThrow();
+
+    expect(() =>
+      inquirySchema.parse({
+        name: "Valid Name",
+        email: "valid@company.com",
+        helpNeeded: "12345678901234567890",
+      }),
+    ).toThrow();
   });
 
   it("rejects empty name or empty help description", () => {

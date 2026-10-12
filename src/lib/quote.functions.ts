@@ -9,6 +9,21 @@ async function fingerprint(value: string) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+// In-memory rate limiting tracker (max 5 inquiries per hour per fingerprint)
+const rateLimitMap = new Map<string, number[]>();
+
+function checkRateLimit(requesterHash: string): boolean {
+  const now = Date.now();
+  const windowMs = 60 * 60 * 1000;
+  const timestamps = (rateLimitMap.get(requesterHash) || []).filter((t) => now - t < windowMs);
+  if (timestamps.length >= 5) {
+    return false;
+  }
+  timestamps.push(now);
+  rateLimitMap.set(requesterHash, timestamps);
+  return true;
+}
+
 export const submitInquiry = createServerFn({ method: "POST" })
   .inputValidator((input) => inquirySchema.parse(input))
   .handler(async ({ data }) => {
@@ -19,23 +34,10 @@ export const submitInquiry = createServerFn({ method: "POST" })
     const ip = getRequestIP({ xForwardedFor: true }) ?? "unknown";
     const agent = getRequestHeader("user-agent") ?? "unknown";
     const requesterHash = await fingerprint(`${ip}|${agent}`);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // Rate-limiting check: max 5 inquiries per hour per fingerprint
-    const since = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { count, error: countError } = await supabaseAdmin
-      .from("quote_requests")
-      .select("id", { count: "exact", head: true })
-      .eq("requester_hash", requesterHash)
-      .gte("created_at", since);
-
-    if (countError) {
-      console.error("[Inquiry] Rate limit check error:", countError);
-      throw new Error("Unable to check submission limit. Please try again or reach out directly.");
-    }
-    if ((count ?? 0) >= 5) {
+    if (!checkRateLimit(requesterHash)) {
       throw new Error(
-        "Too many recent inquiries. Please try again later or contact us directly via email.",
+        "Too many recent inquiries. Please wait a few moments or contact us directly via email.",
       );
     }
 
@@ -56,7 +58,10 @@ export const submitInquiry = createServerFn({ method: "POST" })
     const services =
       data.services && data.services.length > 0 ? data.services : ["Website creation"];
 
-    const { error: insertError } = await supabaseAdmin.from("quote_requests").insert({
+    // Delegate to resilient storage handler with automatic Supabase sync
+    const { saveInquiryToStore } = await import("./inquiry-store.server");
+
+    await saveInquiryToStore({
       contact_name: contactName,
       business_name: businessName,
       email: data.email.trim().toLowerCase(),
@@ -67,13 +72,6 @@ export const submitInquiry = createServerFn({ method: "POST" })
       source: "website",
       requester_hash: requesterHash,
     });
-
-    if (insertError) {
-      console.error("[Inquiry] Database insert error:", insertError);
-      throw new Error(
-        "Unable to save your inquiry. Please try again or reach out directly via email.",
-      );
-    }
 
     return { success: true };
   });

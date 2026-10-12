@@ -110,4 +110,32 @@ describe("Error Recovery & Data Preservation Behavior", () => {
       "Need 5-page commercial website with contact form and services overview.",
     );
   });
+
+  it("safely stores inquiries in resilient store when Supabase environment variables are missing", async () => {
+    const { saveInquiryToStore, getAllInquiriesFromStore } =
+      await import("@/lib/inquiry-store.server");
+
+    const testPayload = {
+      contact_name: "Harmanpreet Singh",
+      business_name: "Nova Logistics",
+      email: "hp8187302@gmail.com",
+      services: ["Website creation"],
+      business_context: "Direct inquiry for NovaCraft services.",
+      project_details: "Looking to build a modern high-performance website for our company.",
+      consent: true,
+      source: "website",
+      requester_hash: "test-hash-123",
+    };
+
+    const res = await saveInquiryToStore(testPayload);
+    expect(res.success).toBe(true);
+    expect(res.id).toBeDefined();
+
+    const fetchResult = await getAllInquiriesFromStore();
+    expect(fetchResult.error).toBeNull();
+    const stored = fetchResult.inquiries.find((i) => i.id === res.id);
+    expect(stored).toBeDefined();
+    expect(stored?.contact_name).toBe("Harmanpreet Singh");
+    expect(stored?.email).toBe("hp8187302@gmail.com");
+  });
 });
