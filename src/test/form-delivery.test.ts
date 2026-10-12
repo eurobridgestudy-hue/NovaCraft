@@ -91,7 +91,7 @@ describe("Error Recovery & Data Preservation Behavior", () => {
 
     // Simulate backend throw
     let serverError: string | null = null;
-    let submitted = false;
+    const submitted = false;
     const preservedState = { ...initialFormState };
 
     try {
