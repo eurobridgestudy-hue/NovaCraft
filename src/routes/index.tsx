@@ -129,6 +129,17 @@ function HomePage() {
     }
   };
 
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    if (typeof window === "undefined") return;
+    const element = document.getElementById(targetId);
+    if (element) {
+      e.preventDefault();
+      const y = element.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      window.history.pushState(null, "", `#${targetId}`);
+    }
+  };
+
   return (
     <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500 selection:text-black">
       {/* 3D WebGL Atmospheric Canvas with Polished Static Fallback */}
@@ -145,65 +156,143 @@ function HomePage() {
           id="hero"
           className="relative min-h-[85vh] flex flex-col justify-between px-5 pt-20 pb-16 lg:px-12 lg:pt-28 lg:pb-24"
         >
-          <div className="mx-auto max-w-[1440px] w-full">
-            {/* Small Factual Audience Line */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 py-1 text-xs font-mono text-cyan-300 backdrop-blur-md">
-              <span className="size-2 rounded-full bg-cyan-400" />
-              <span>{siteConfig.audience}</span>
+          <div className="mx-auto max-w-[1440px] w-full grid gap-12 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
+            {/* Left Column: Core Outreach Headline & Action */}
+            <div>
+              {/* Small Factual Audience Line */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 py-1 text-xs font-mono text-cyan-300 backdrop-blur-md">
+                <span className="size-2 rounded-full bg-cyan-400" />
+                <span>{siteConfig.audience}</span>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="mt-8 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] text-slate-100 max-w-5xl">
+                A website that makes your business easier to choose.
+              </h1>
+
+              {/* Supporting Copy */}
+              <p className="mt-8 max-w-2xl text-lg sm:text-xl leading-relaxed text-slate-300">
+                NovaCraft builds clear, professional websites that explain your services and make it
+                easy for customers to contact you. Need help with social media too? We offer advice
+                and management.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="mt-10 flex flex-wrap items-center gap-4 pt-4">
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-14 px-8 text-base bg-cyan-500 text-black font-semibold hover:bg-cyan-400 shadow-xl shadow-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <a href="#contact" onClick={(e) => scrollToSection(e, "contact")}>
+                    <span>Discuss your website</span>
+                    <ArrowRight className="ml-2 size-4" />
+                  </a>
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="h-14 px-7 text-base border-white/15 bg-white/5 backdrop-blur-md hover:border-cyan-400/60 transition-all hover:bg-white/10 text-slate-200"
+                >
+                  <a href="#services" onClick={(e) => scrollToSection(e, "services")}>
+                    <span>Explore services</span>
+                    <ArrowDownRight className="ml-2 size-4 text-cyan-400" />
+                  </a>
+                </Button>
+              </div>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="mt-8 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] text-slate-100 max-w-5xl">
-              A website that makes your business easier to choose.
-            </h1>
+            {/* Right Column: Original, Restrained Website-Interface Concept Visual */}
+            <div className="hidden lg:block">
+              <div className="relative rounded-2xl border border-cyan-400/30 bg-[#060c18]/85 p-6 backdrop-blur-xl shadow-2xl shadow-cyan-950/40">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4 text-xs font-mono text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-white font-medium">Concept Architecture</span>
+                  </div>
+                  <span className="rounded-full bg-cyan-500/10 border border-cyan-400/30 px-2.5 py-0.5 text-[11px] text-cyan-300">
+                    Clean & Fast
+                  </span>
+                </div>
 
-            {/* Supporting Copy */}
-            <p className="mt-8 max-w-2xl text-lg sm:text-xl leading-relaxed text-slate-300">
-              NovaCraft builds clear, professional websites that explain your services and make it
-              easy for customers to contact you. Need help with social media too? We offer advice
-              and management.
-            </p>
+                <div className="mt-5 space-y-4 text-xs">
+                  {/* Mock Nav Bar */}
+                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="size-5 rounded bg-cyan-400/80 flex items-center justify-center text-[10px] text-black font-bold">
+                        N
+                      </div>
+                      <span className="font-semibold text-slate-200">Your Business</span>
+                    </div>
+                    <span className="rounded bg-cyan-400/20 px-2.5 py-1 text-[10px] font-mono text-cyan-300 border border-cyan-400/30 font-medium">
+                      Direct Inquiry CTA
+                    </span>
+                  </div>
 
-            {/* Action Buttons */}
-            <div className="mt-10 flex flex-wrap items-center gap-4 pt-4">
-              <Button
-                asChild
-                size="lg"
-                className="h-14 px-8 text-base bg-cyan-500 text-black font-semibold hover:bg-cyan-400 shadow-xl shadow-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <a href="#contact">
-                  <span>Discuss your website</span>
-                  <ArrowRight className="ml-2 size-4" />
-                </a>
-              </Button>
+                  {/* Mock Hero Proposition */}
+                  <div className="rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-4">
+                    <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-wider block font-semibold">
+                      Clear Value Proposition
+                    </span>
+                    <p className="mt-1 font-semibold text-white text-sm">
+                      What you offer & why clients choose you
+                    </p>
+                    <p className="mt-1 text-slate-300 text-[11px] leading-relaxed">
+                      Eliminates guesswork so prospects immediately take the next step.
+                    </p>
+                  </div>
 
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-14 px-7 text-base border-white/15 bg-white/5 backdrop-blur-md hover:border-cyan-400/60 transition-all hover:bg-white/10 text-slate-200"
-              >
-                <a href="#services">
-                  <span>Explore services</span>
-                  <ArrowDownRight className="ml-2 size-4 text-cyan-400" />
-                </a>
-              </Button>
+                  {/* 2-Col Service Highlights */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+                      <span className="font-medium text-slate-200 block text-xs">
+                        Primary Offer
+                      </span>
+                      <span className="text-[11px] text-slate-400 mt-0.5 block">
+                        Clear service scope
+                      </span>
+                    </div>
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+                      <span className="font-medium text-slate-200 block text-xs">
+                        Direct Contact
+                      </span>
+                      <span className="text-[11px] text-slate-400 mt-0.5 block">
+                        Zero-friction response
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Highlights Strip */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/10 font-mono text-[11px] text-slate-300">
+                    <span className="text-emerald-400 font-medium">✓ Mobile optimized</span>
+                    <span className="text-cyan-300 font-medium">✓ Direct phone & email</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Quick Indicator Strip */}
-          <div className="mx-auto max-w-[1440px] w-full mt-16 pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400">
+          {/* Quick Indicator Strip - High contrast, Worldwide wording */}
+          <div className="mx-auto max-w-[1440px] w-full mt-16 pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-6 text-sm text-slate-200">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-cyan-400">Primary:</span>
-              <span>Website Creation</span>
+              <span className="font-mono text-xs uppercase tracking-wider text-cyan-300 font-semibold">
+                Primary:
+              </span>
+              <span className="font-medium">Website Creation</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-mono text-cyan-400">Additional Support:</span>
-              <span>Social Media Advice & Management</span>
+              <span className="font-mono text-xs uppercase tracking-wider text-cyan-300 font-semibold">
+                Additional Support:
+              </span>
+              <span className="font-medium">Social Media Advice & Management</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-mono text-cyan-400">Coverage:</span>
-              <span>Worldwide Operations</span>
+              <span className="font-mono text-xs uppercase tracking-wider text-cyan-300 font-semibold">
+                Coverage:
+              </span>
+              <span className="font-medium">Worldwide</span>
             </div>
           </div>
         </section>
@@ -224,7 +313,7 @@ function HomePage() {
                 Does your online presence reflect your business?
               </h2>
               <p className="mt-4 text-base text-slate-300 leading-relaxed">
-                Most businesses reach out to us at one of these three stages:
+                You might be at one of these three stages:
               </p>
             </div>
 
@@ -283,9 +372,6 @@ function HomePage() {
                     <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
                       {goal.description}
                     </p>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-white/10 text-xs text-cyan-400 font-mono">
-                    ✦ Practical Goal
                   </div>
                 </div>
               ))}
@@ -362,53 +448,102 @@ function HomePage() {
 
             <div className="mt-12 grid gap-10 lg:grid-cols-[1.4fr_1fr] items-center">
               {/* Concept Wireframe / Layout Preview */}
-              <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#070c16] p-6 sm:p-8 shadow-2xl">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 text-xs font-mono text-slate-400">
+              <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#070d18] p-5 sm:p-7 shadow-2xl">
+                {/* Browser Top Bar */}
+                <div className="flex items-center justify-between border-b border-white/10 pb-3 text-xs font-mono text-slate-300">
                   <div className="flex items-center gap-1.5">
-                    <span className="size-2.5 rounded-full bg-red-400/60" />
-                    <span className="size-2.5 rounded-full bg-amber-400/60" />
-                    <span className="size-2.5 rounded-full bg-emerald-400/60" />
+                    <span className="size-2.5 rounded-full bg-red-400/70" />
+                    <span className="size-2.5 rounded-full bg-amber-400/70" />
+                    <span className="size-2.5 rounded-full bg-emerald-400/70" />
                   </div>
-                  <span>{conceptDemonstration.conceptSubtitle}</span>
-                  <span className="text-cyan-400 font-semibold">Demo Structure</span>
+                  <span className="text-[11px] text-slate-400 truncate max-w-[200px] sm:max-w-none">
+                    preview.novacraft.studio/commercial-contractor
+                  </span>
+                  <span className="text-cyan-300 font-medium text-[11px] rounded bg-cyan-400/10 px-2 py-0.5 border border-cyan-400/20">
+                    Concept Preview
+                  </span>
                 </div>
 
-                <div className="mt-6 space-y-4">
-                  {/* Mockup Header Block */}
-                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-4">
-                    <div className="h-4 w-28 rounded bg-cyan-400/60" />
-                    <div className="flex gap-3">
-                      <div className="h-3 w-16 rounded bg-white/20 hidden sm:block" />
-                      <div className="h-3 w-16 rounded bg-white/20 hidden sm:block" />
-                      <div className="h-6 w-20 rounded bg-cyan-400/80" />
+                {/* Mockup Website Content */}
+                <div className="mt-5 space-y-4 text-left">
+                  {/* Mockup Header Navigation */}
+                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="size-6 rounded bg-cyan-500 flex items-center justify-center font-bold text-black text-xs">
+                        A
+                      </div>
+                      <span className="font-semibold text-xs text-white">
+                        Apex Electrical & Fitouts
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] text-slate-300 hidden sm:inline">Services</span>
+                      <span className="text-[11px] text-slate-300 hidden sm:inline">
+                        Compliance
+                      </span>
+                      <span className="rounded bg-cyan-400/20 px-2.5 py-1 text-[11px] font-mono text-cyan-300 border border-cyan-400/30">
+                        Call (020) 8123 4567
+                      </span>
                     </div>
                   </div>
 
-                  {/* Mockup Hero Block */}
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-6 space-y-3">
-                    <div className="h-3 w-24 rounded bg-cyan-400/40" />
-                    <div className="h-6 w-3/4 rounded bg-white/80" />
-                    <div className="h-3 w-5/6 rounded bg-white/30" />
-                    <div className="flex gap-3 pt-2">
-                      <div className="h-8 w-32 rounded bg-cyan-500" />
-                      <div className="h-8 w-24 rounded border border-white/20" />
+                  {/* Mockup Hero Banner */}
+                  <div className="rounded-xl border border-white/10 bg-gradient-to-r from-cyan-950/40 via-white/5 to-transparent p-5 space-y-2.5">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-cyan-400 block font-semibold">
+                      Commercial & Industrial Electrical Contractors
+                    </span>
+                    <h3 className="font-display text-lg sm:text-xl font-bold text-white leading-snug">
+                      Electrical installations, fitouts & fast compliance certifications.
+                    </h3>
+                    <p className="text-xs text-slate-300 max-w-md leading-relaxed">
+                      Serving retail, commercial offices, and industrial properties with agreed
+                      scopes and rapid turnaround.
+                    </p>
+                    <div className="flex flex-wrap gap-2.5 pt-1.5">
+                      <span className="rounded bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-black">
+                        Request Site Inspection
+                      </span>
+                      <span className="rounded border border-white/20 bg-white/5 px-3 py-1.5 text-xs text-slate-200">
+                        View Accreditations
+                      </span>
                     </div>
                   </div>
 
                   {/* Mockup 3 Services Columns */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="rounded-lg border border-white/10 bg-white/5 p-3 space-y-1.5">
-                      <div className="h-3 w-16 rounded bg-white/40" />
-                      <div className="h-2 w-full rounded bg-white/20" />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3.5 space-y-1">
+                      <span className="font-semibold text-xs text-white block">
+                        Commercial Fitouts
+                      </span>
+                      <p className="text-[11px] text-slate-300 leading-normal">
+                        Full electrical design, power distribution & cabling.
+                      </p>
                     </div>
-                    <div className="rounded-lg border border-white/10 bg-white/5 p-3 space-y-1.5">
-                      <div className="h-3 w-16 rounded bg-white/40" />
-                      <div className="h-2 w-full rounded bg-white/20" />
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3.5 space-y-1">
+                      <span className="font-semibold text-xs text-white block">
+                        24/7 Diagnostics
+                      </span>
+                      <p className="text-[11px] text-slate-300 leading-normal">
+                        Rapid fault finding and emergency circuit rectifications.
+                      </p>
                     </div>
-                    <div className="rounded-lg border border-white/10 bg-white/5 p-3 space-y-1.5">
-                      <div className="h-3 w-16 rounded bg-white/40" />
-                      <div className="h-2 w-full rounded bg-white/20" />
+                    <div className="rounded-lg border border-white/10 bg-white/5 p-3.5 space-y-1">
+                      <span className="font-semibold text-xs text-white block">
+                        Compliance & EICR
+                      </span>
+                      <p className="text-[11px] text-slate-300 leading-normal">
+                        Statutory electrical inspections and safety reporting.
+                      </p>
                     </div>
+                  </div>
+
+                  {/* Mockup Footer Trust Strip */}
+                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-black/40 px-3.5 py-2 text-[11px] font-mono text-slate-300">
+                    <span className="text-emerald-400">✓ Fixed-scope quote</span>
+                    <span className="text-slate-400 hidden sm:inline">·</span>
+                    <span className="text-cyan-300">✓ Direct engineer contact</span>
+                    <span className="text-slate-400 hidden sm:inline">·</span>
+                    <span className="text-slate-300">✓ Fully insured</span>
                   </div>
                 </div>
               </div>
@@ -545,39 +680,43 @@ function HomePage() {
                 </p>
 
                 {/* Direct Contact Channels */}
-                <div className="mt-8 space-y-4">
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                    <span className="font-mono text-xs text-slate-400 uppercase block">
+                <div className="mt-8 space-y-3">
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+                    <span className="font-mono text-xs uppercase tracking-wider text-slate-300 block font-semibold">
                       Direct Email
                     </span>
                     <a
                       href={`mailto:${siteConfig.contactEmail}`}
-                      className="mt-1 inline-flex items-center gap-2 font-mono text-sm text-cyan-300 hover:underline"
+                      className="mt-1 inline-flex items-center gap-2 font-mono text-base font-semibold text-cyan-300 hover:text-cyan-200 hover:underline"
                     >
                       <Mail className="size-4" />
                       <span>{siteConfig.contactEmail}</span>
                     </a>
                   </div>
 
-                  <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-                    <span className="font-mono text-xs text-slate-400 uppercase block">
-                      Phone Contact
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+                    <span className="font-mono text-xs uppercase tracking-wider text-slate-300 block font-semibold">
+                      Phone & Messaging
                     </span>
                     <a
                       href={siteConfig.telLink}
-                      className="mt-1 inline-flex items-center gap-2 font-mono text-sm text-emerald-400 hover:underline"
+                      className="mt-1 inline-flex items-center gap-2 font-mono text-base font-semibold text-emerald-400 hover:text-emerald-300 hover:underline"
                     >
                       <Phone className="size-4" />
                       <span>{siteConfig.phoneFormatted}</span>
                     </a>
+                    <p className="mt-1 text-xs text-slate-300">
+                      Available for WhatsApp & calls worldwide
+                    </p>
                   </div>
                 </div>
 
-                {/* Privacy Assurance */}
-                <p className="mt-6 text-xs text-slate-400 leading-relaxed">
-                  ✦ Privacy notice: We only use your details to review and reply to your inquiry. We
-                  do not share your information or send unsolicited marketing.
-                </p>
+                {/* Privacy Notice with Clear Contrast */}
+                <div className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <span className="text-cyan-300 font-semibold">✦ Privacy notice:</span> We only use
+                  your details to review and reply to your inquiry. We do not share your information
+                  or send unsolicited marketing.
+                </div>
               </div>
 
               {/* Right Column: Practical Short Form */}
@@ -590,7 +729,7 @@ function HomePage() {
                     <h3 className="mt-6 font-display text-3xl font-bold text-white">
                       Thank you! Your inquiry has been sent.
                     </h3>
-                    <p className="mt-4 text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                    <p className="mt-4 text-sm text-slate-200 max-w-md mx-auto leading-relaxed">
                       We have received your details and will review your inquiry. You can also reply
                       directly to the email that brought you to NovaCraft.
                     </p>
@@ -608,7 +747,7 @@ function HomePage() {
                             website: "",
                           });
                         }}
-                        className="border-white/20 text-white hover:bg-white/10"
+                        className="border-white/20 text-white hover:bg-white/10 font-medium"
                       >
                         Send another message
                       </Button>
@@ -618,10 +757,10 @@ function HomePage() {
                   <form
                     onSubmit={handleSubmit}
                     noValidate
-                    className="rounded-2xl border border-white/10 bg-black/70 p-6 sm:p-10 shadow-xl space-y-6"
+                    className="rounded-2xl border border-white/15 bg-black/80 p-6 sm:p-10 shadow-xl space-y-6"
                   >
                     {serverError && (
-                      <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-xs text-red-300">
+                      <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
                         {serverError}
                       </div>
                     )}
@@ -630,7 +769,7 @@ function HomePage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor="name"
-                        className="text-xs font-semibold uppercase text-slate-300"
+                        className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                       >
                         Your Name <span className="text-cyan-400">*</span>
                       </Label>
@@ -639,16 +778,22 @@ function HomePage() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="e.g. Alex Morgan"
-                        className={errors.name ? "border-red-400" : "border-white/15 bg-white/5"}
+                        className={
+                          errors.name
+                            ? "border-red-400"
+                            : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                        }
                       />
-                      {errors.name && <p className="text-xs text-red-400">{errors.name}</p>}
+                      {errors.name && (
+                        <p className="text-xs text-red-400 font-medium">{errors.name}</p>
+                      )}
                     </div>
 
                     {/* Email: required */}
                     <div className="space-y-2">
                       <Label
                         htmlFor="email"
-                        className="text-xs font-semibold uppercase text-slate-300"
+                        className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                       >
                         Email Address <span className="text-cyan-400">*</span>
                       </Label>
@@ -658,25 +803,32 @@ function HomePage() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="alex@company.com"
-                        className={errors.email ? "border-red-400" : "border-white/15 bg-white/5"}
+                        className={
+                          errors.email
+                            ? "border-red-400"
+                            : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                        }
                       />
-                      {errors.email && <p className="text-xs text-red-400">{errors.email}</p>}
+                      {errors.email && (
+                        <p className="text-xs text-red-400 font-medium">{errors.email}</p>
+                      )}
                     </div>
 
                     {/* Business Name: optional */}
                     <div className="space-y-2">
                       <Label
                         htmlFor="businessName"
-                        className="text-xs font-semibold uppercase text-slate-300"
+                        className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                       >
-                        Business Name <span className="text-slate-500 font-normal">(optional)</span>
+                        Business Name{" "}
+                        <span className="text-slate-400 font-normal normal-case">(optional)</span>
                       </Label>
                       <Input
                         id="businessName"
                         value={formData.businessName}
                         onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                         placeholder="e.g. Morgan Craft Services"
-                        className="border-white/15 bg-white/5"
+                        className="border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                       />
                     </div>
 
@@ -684,10 +836,10 @@ function HomePage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor="currentWebsiteOrProfile"
-                        className="text-xs font-semibold uppercase text-slate-300"
+                        className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                       >
                         Current website or social profile{" "}
-                        <span className="text-slate-500 font-normal">(optional)</span>
+                        <span className="text-slate-400 font-normal normal-case">(optional)</span>
                       </Label>
                       <Input
                         id="currentWebsiteOrProfile"
@@ -696,7 +848,7 @@ function HomePage() {
                           setFormData({ ...formData, currentWebsiteOrProfile: e.target.value })
                         }
                         placeholder="e.g. instagram.com/mybusiness or yoursite.com"
-                        className="border-white/15 bg-white/5"
+                        className="border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                       />
                     </div>
 
@@ -704,7 +856,7 @@ function HomePage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor="helpNeeded"
-                        className="text-xs font-semibold uppercase text-slate-300"
+                        className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                       >
                         What do you need help with? <span className="text-cyan-400">*</span>
                       </Label>
@@ -715,11 +867,13 @@ function HomePage() {
                         onChange={(e) => setFormData({ ...formData, helpNeeded: e.target.value })}
                         placeholder="Tell us what you would like to create or improve..."
                         className={
-                          errors.helpNeeded ? "border-red-400" : "border-white/15 bg-white/5"
+                          errors.helpNeeded
+                            ? "border-red-400"
+                            : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                         }
                       />
                       {errors.helpNeeded && (
-                        <p className="text-xs text-red-400">{errors.helpNeeded}</p>
+                        <p className="text-xs text-red-400 font-medium">{errors.helpNeeded}</p>
                       )}
                     </div>
 
@@ -744,7 +898,7 @@ function HomePage() {
                       {submitting ? "Sending inquiry..." : "Send inquiry"}
                     </Button>
 
-                    <p className="text-center text-xs text-slate-500">
+                    <p className="text-center text-xs sm:text-sm text-slate-300 font-medium">
                       We’ll agree the scope and next steps before work begins.
                     </p>
                   </form>

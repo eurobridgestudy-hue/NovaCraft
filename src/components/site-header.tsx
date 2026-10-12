@@ -21,6 +21,20 @@ export function SiteHeader() {
 
   const contactTarget = isHome ? "#contact" : "/#contact";
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, target: string) => {
+    if (isHome && target.startsWith("#")) {
+      const id = target.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        e.preventDefault();
+        const y = el.getBoundingClientRect().top + window.scrollY - 88;
+        window.scrollTo({ top: y, behavior: "smooth" });
+        window.history.pushState(null, "", target);
+        setOpen(false);
+      }
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#03060a]/90 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 lg:px-10">
@@ -39,7 +53,8 @@ export function SiteHeader() {
             <a
               key={item.label}
               href={item.to}
-              className="text-sm font-medium text-slate-300 transition-colors hover:text-cyan-400"
+              onClick={(e) => handleNavClick(e, item.to)}
+              className="text-sm font-medium text-slate-200 transition-colors hover:text-cyan-400"
             >
               {item.label}
             </a>
@@ -50,7 +65,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-5 sm:flex">
           <a
             href={siteConfig.telLink}
-            className="hidden items-center gap-2 font-mono text-xs text-slate-400 hover:text-cyan-400 transition-colors xl:flex"
+            className="hidden items-center gap-2 font-mono text-xs font-medium text-slate-300 hover:text-cyan-300 transition-colors xl:flex"
             title="Call NovaCraft direct"
           >
             <Phone className="size-3.5 text-cyan-400" />
@@ -62,7 +77,7 @@ export function SiteHeader() {
             size="default"
             className="bg-cyan-500 text-black hover:bg-cyan-400 font-semibold shadow-sm transition-all"
           >
-            <a href={contactTarget}>
+            <a href={contactTarget} onClick={(e) => handleNavClick(e, contactTarget)}>
               <span>Discuss your website</span>
               <ArrowRight className="ml-1.5 size-4" />
             </a>
@@ -94,7 +109,7 @@ export function SiteHeader() {
                 <a
                   key={item.label}
                   href={item.to}
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => handleNavClick(e, item.to)}
                   className="py-3.5 font-display text-2xl font-medium tracking-tight text-slate-100 hover:text-cyan-400 transition-colors"
                 >
                   {item.label}

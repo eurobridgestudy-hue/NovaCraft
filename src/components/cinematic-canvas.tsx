@@ -78,28 +78,38 @@ export function CinematicCanvas() {
     const ambientLight = new THREE.AmbientLight(0x07111e, 1.4);
     scene.add(ambientLight);
 
-    const keyMoonLight = new THREE.DirectionalLight(0x38bdf8, 2.0);
+    const keyMoonLight = new THREE.DirectionalLight(0x38bdf8, 2.4);
     keyMoonLight.position.set(12, 22, 14);
     scene.add(keyMoonLight);
 
-    const warmAccentLight = new THREE.DirectionalLight(0xf59e0b, 0.7);
+    const rightRimLight = new THREE.DirectionalLight(0x38bdf8, 3.2);
+    rightRimLight.position.set(16, 10, 8);
+    scene.add(rightRimLight);
+
+    const warmAccentLight = new THREE.DirectionalLight(0xf59e0b, 0.8);
     warmAccentLight.position.set(-14, -8, -10);
     scene.add(warmAccentLight);
 
-    const corePointLight = new THREE.PointLight(0x6366f1, 2.5, 35, 1.8);
+    const corePointLight = new THREE.PointLight(0x6366f1, 3.0, 35, 1.6);
     corePointLight.position.set(0, 2.5, 0);
     scene.add(corePointLight);
+
+    const cyanGlowPoint = new THREE.PointLight(0x06b6d4, 2.2, 22, 1.4);
+    cyanGlowPoint.position.set(2.5, 3.5, 2.5);
+    scene.add(cyanGlowPoint);
 
     // 5. Procedural 3D World (NovaCraft Monolith & Rings)
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // Monolith
+    // Monolith - richer contrast, subtle rim emissive, clear cyan edges
     const monolithGeo = new THREE.BoxGeometry(1.6, 6.2, 1.6);
     const monolithMat = new THREE.MeshStandardMaterial({
-      color: 0x090d16,
-      roughness: 0.2,
-      metalness: 0.9,
+      color: 0x0c1b2e,
+      roughness: 0.32,
+      metalness: 0.65,
+      emissive: 0x071e36,
+      emissiveIntensity: 0.5,
     });
     const monolith = new THREE.Mesh(monolithGeo, monolithMat);
     monolith.position.set(0, 2.4, 0);
@@ -109,7 +119,7 @@ export function CinematicCanvas() {
     const edgesMat = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.75,
     });
     const monolithEdges = new THREE.LineSegments(edgesGeo, edgesMat);
     monolith.add(monolithEdges);
@@ -123,9 +133,11 @@ export function CinematicCanvas() {
       const h = 2.0 + (i % 2) * 1.5;
       const satGeo = new THREE.BoxGeometry(0.8, h, 0.8);
       const satMat = new THREE.MeshStandardMaterial({
-        color: 0x0a101d,
-        roughness: 0.25,
-        metalness: 0.85,
+        color: 0x0e1d30,
+        roughness: 0.3,
+        metalness: 0.7,
+        emissive: 0x06182c,
+        emissiveIntensity: 0.45,
       });
       const sat = new THREE.Mesh(satGeo, satMat);
       sat.position.set(Math.cos(angle) * dist, h * 0.5 - 0.5, Math.sin(angle) * dist);
@@ -136,7 +148,7 @@ export function CinematicCanvas() {
         new THREE.LineBasicMaterial({
           color: i % 2 === 0 ? 0x818cf8 : 0x38bdf8,
           transparent: true,
-          opacity: 0.35,
+          opacity: 0.65,
         }),
       );
       sat.add(satEdge);
@@ -144,11 +156,11 @@ export function CinematicCanvas() {
       worldGroup.add(sat);
     }
 
-    // Connectivity Rings
+    // Connectivity Rings with vibrant visibility
     const ringMat1 = new THREE.MeshBasicMaterial({
       color: 0x6366f1,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.5,
       wireframe: true,
     });
     const ringGeo1 = new THREE.TorusGeometry(4.8, 0.02, 10, isMobile ? 40 : 80);
@@ -161,7 +173,7 @@ export function CinematicCanvas() {
     const ringMat2 = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.2,
+      opacity: 0.45,
       wireframe: true,
     });
     const ringGeo2 = new THREE.TorusGeometry(6.2, 0.02, 10, isMobile ? 40 : 80);
@@ -192,7 +204,7 @@ export function CinematicCanvas() {
       color: 0x7dd3fc,
       size: 0.07,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.55,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     });
@@ -200,13 +212,21 @@ export function CinematicCanvas() {
     scene.add(motes);
 
     // Waypoints for smooth scroll progression
+    // On desktop, Waypoint 0 offsets camera to frame 3D composition on the right side of hero
+    const heroCameraX = isMobile ? 0 : -2.4;
+    const heroTargetX = isMobile ? 0 : 1.4;
+
     const WAYPOINTS = [
-      { p: new THREE.Vector3(0, 3.4, 13.8), t: new THREE.Vector3(0, 2.0, 0), fov: 38 },
+      {
+        p: new THREE.Vector3(heroCameraX, 3.4, 13.8),
+        t: new THREE.Vector3(heroTargetX, 2.0, 0),
+        fov: isMobile ? 40 : 37,
+      },
       { p: new THREE.Vector3(-3.8, 2.4, 9.8), t: new THREE.Vector3(0.8, 1.6, -2.0), fov: 40 },
       { p: new THREE.Vector3(3.6, 2.8, 6.2), t: new THREE.Vector3(-1.2, 1.8, -3.5), fov: 39 },
       { p: new THREE.Vector3(-2.2, 3.5, 3.0), t: new THREE.Vector3(0.8, 2.0, -5.5), fov: 41 },
-      { p: new THREE.Vector3(0.0, 4.8, -2.0), t: new THREE.Vector3(0.0, 2.5, -12.0), fov: 37 },
-      { p: new THREE.Vector3(0.0, 5.8, -6.5), t: new THREE.Vector3(0.0, 1.8, -18.0), fov: 35 },
+      { p: new THREE.Vector3(0.0, 4.0, 1.0), t: new THREE.Vector3(0.0, 2.2, -6.0), fov: 38 },
+      { p: new THREE.Vector3(0.0, 3.6, 5.5), t: new THREE.Vector3(0.0, 2.0, -1.5), fov: 38 },
     ];
 
     const curveP = new THREE.CatmullRomCurve3(

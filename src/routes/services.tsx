@@ -81,9 +81,6 @@ export function ServicesPage() {
                     {goal.description}
                   </p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-border/80 text-xs text-cyan-400 font-mono">
-                  ✦ Core Focus
-                </div>
               </div>
             ))}
           </div>

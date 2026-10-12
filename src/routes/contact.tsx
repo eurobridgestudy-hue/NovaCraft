@@ -177,16 +177,16 @@ function ContactPage() {
             {/* Direct Contact Card */}
             <div className="luxury-card rounded-2xl p-6 sm:p-8">
               <h3 className="font-display text-xl text-white">Direct Channels</h3>
-              <p className="mt-2 text-xs text-slate-400">You can reach us directly at any time:</p>
+              <p className="mt-2 text-xs text-slate-300">You can reach us directly at any time:</p>
 
               <div className="mt-5 space-y-3">
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-300 block">
                     Direct Email
                   </span>
                   <a
                     href={`mailto:${siteConfig.contactEmail}`}
-                    className="mt-1 inline-flex items-center gap-2 font-mono text-sm font-semibold text-cyan-300 hover:underline"
+                    className="mt-1 inline-flex items-center gap-2 font-mono text-base font-semibold text-cyan-300 hover:text-cyan-200 hover:underline"
                   >
                     <Mail className="size-4 text-cyan-400" />
                     <span>{siteConfig.contactEmail}</span>
@@ -194,26 +194,28 @@ function ContactPage() {
                 </div>
 
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400 block">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-slate-300 block">
                     Phone / Messaging
                   </span>
                   <a
                     href={siteConfig.telLink}
-                    className="mt-1 inline-flex items-center gap-2 font-mono text-sm font-semibold text-emerald-400 hover:underline"
+                    className="mt-1 inline-flex items-center gap-2 font-mono text-base font-semibold text-emerald-400 hover:text-emerald-300 hover:underline"
                   >
                     <Phone className="size-4 text-emerald-400" />
                     <span>{siteConfig.phoneFormatted}</span>
                   </a>
-                  <p className="mt-1 text-[11px] text-slate-400">
+                  <p className="mt-1 text-xs text-slate-300">
                     Available for WhatsApp & calls worldwide
                   </p>
                 </div>
               </div>
 
-              <p className="mt-6 text-xs text-slate-400 leading-relaxed">
-                ✦ Privacy notice: We only use your information to evaluate and respond to your
-                inquiry. We do not share your details or send unsolicited marketing.
-              </p>
+              {/* Privacy Notice with Clear Contrast */}
+              <div className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <span className="text-cyan-300 font-semibold">✦ Privacy notice:</span> We only use
+                your details to evaluate and respond to your inquiry. We do not share your details
+                or send unsolicited marketing.
+              </div>
             </div>
           </div>
 
@@ -227,7 +229,7 @@ function ContactPage() {
                 <h3 className="mt-6 font-display text-3xl font-bold text-white">
                   Thank you! Your inquiry has been sent.
                 </h3>
-                <p className="mx-auto mt-4 max-w-md text-sm text-slate-300 leading-relaxed">
+                <p className="mx-auto mt-4 max-w-md text-sm text-slate-200 leading-relaxed">
                   We have received your message and will review it promptly. We will reply to{" "}
                   <span className="font-semibold text-white">{formData.email}</span>.
                 </p>
@@ -245,7 +247,7 @@ function ContactPage() {
                         website: "",
                       });
                     }}
-                    className="border-white/20 text-white hover:bg-white/10"
+                    className="border-white/20 text-white hover:bg-white/10 font-medium"
                   >
                     Send another message
                   </Button>
@@ -258,7 +260,7 @@ function ContactPage() {
                 className="luxury-card rounded-2xl p-6 sm:p-10 shadow-xl space-y-6"
               >
                 {serverError && (
-                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-xs text-red-300">
+                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
                     {serverError}
                   </div>
                 )}
@@ -267,7 +269,7 @@ function ContactPage() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="contact-name"
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                    className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                   >
                     Your Name <span className="text-cyan-400">*</span>
                   </Label>
@@ -276,16 +278,20 @@ function ContactPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="e.g. Alex Morgan"
-                    className={errors.name ? "border-red-400" : "border-white/15 bg-white/5"}
+                    className={
+                      errors.name
+                        ? "border-red-400"
+                        : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                    }
                   />
-                  {errors.name && <p className="text-xs text-red-400">{errors.name}</p>}
+                  {errors.name && <p className="text-xs text-red-400 font-medium">{errors.name}</p>}
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="contact-email"
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                    className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                   >
                     Email Address <span className="text-cyan-400">*</span>
                   </Label>
@@ -295,25 +301,32 @@ function ContactPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="alex@company.com"
-                    className={errors.email ? "border-red-400" : "border-white/15 bg-white/5"}
+                    className={
+                      errors.email
+                        ? "border-red-400"
+                        : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                    }
                   />
-                  {errors.email && <p className="text-xs text-red-400">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-xs text-red-400 font-medium">{errors.email}</p>
+                  )}
                 </div>
 
                 {/* Business Name (Optional) */}
                 <div className="space-y-2">
                   <Label
                     htmlFor="contact-businessName"
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                    className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                   >
-                    Business Name <span className="text-slate-500 font-normal">(optional)</span>
+                    Business Name{" "}
+                    <span className="text-slate-400 font-normal normal-case">(optional)</span>
                   </Label>
                   <Input
                     id="contact-businessName"
                     value={formData.businessName}
                     onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                     placeholder="e.g. Morgan Craft Services"
-                    className="border-white/15 bg-white/5"
+                    className="border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                   />
                 </div>
 
@@ -321,10 +334,10 @@ function ContactPage() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="contact-profile"
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                    className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                   >
                     Current website or social profile{" "}
-                    <span className="text-slate-500 font-normal">(optional)</span>
+                    <span className="text-slate-400 font-normal normal-case">(optional)</span>
                   </Label>
                   <Input
                     id="contact-profile"
@@ -333,7 +346,7 @@ function ContactPage() {
                       setFormData({ ...formData, currentWebsiteOrProfile: e.target.value })
                     }
                     placeholder="e.g. instagram.com/mybusiness or yoursite.com"
-                    className="border-white/15 bg-white/5"
+                    className="border-white/20 bg-white/5 text-white placeholder:text-slate-400"
                   />
                 </div>
 
@@ -341,7 +354,7 @@ function ContactPage() {
                 <div className="space-y-2">
                   <Label
                     htmlFor="contact-help"
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-300"
+                    className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200"
                   >
                     What do you need help with? <span className="text-cyan-400">*</span>
                   </Label>
@@ -351,9 +364,15 @@ function ContactPage() {
                     value={formData.helpNeeded}
                     onChange={(e) => setFormData({ ...formData, helpNeeded: e.target.value })}
                     placeholder="Tell us what you would like to create or improve..."
-                    className={errors.helpNeeded ? "border-red-400" : "border-white/15 bg-white/5"}
+                    className={
+                      errors.helpNeeded
+                        ? "border-red-400"
+                        : "border-white/20 bg-white/5 text-white placeholder:text-slate-400"
+                    }
                   />
-                  {errors.helpNeeded && <p className="text-xs text-red-400">{errors.helpNeeded}</p>}
+                  {errors.helpNeeded && (
+                    <p className="text-xs text-red-400 font-medium">{errors.helpNeeded}</p>
+                  )}
                 </div>
 
                 {/* Honeypot field (hidden from real users) */}
@@ -384,7 +403,7 @@ function ContactPage() {
                   )}
                 </Button>
 
-                <p className="text-center text-xs text-slate-500">
+                <p className="text-center text-xs sm:text-sm text-slate-300 font-medium">
                   We’ll agree the scope and next steps before work begins.
                 </p>
               </form>
