@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791665826178,
+      "tag": "0000_create_quote_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791665851095,
+      "tag": "0001_add_quote_request_rate_limit_key",
+      "breakpoints": true
+    }
+  ]
+}
