@@ -102,6 +102,14 @@ export function SiteFooter() {
             <span>Websites for Businesses</span>
             <span>•</span>
             <span>Social Media Support</span>
+            <span>•</span>
+            <Link
+              to="/admin"
+              className="text-slate-500 hover:text-cyan-400 transition-colors"
+              title="Admin Portal"
+            >
+              Admin
+            </Link>
           </div>
 
           <button
